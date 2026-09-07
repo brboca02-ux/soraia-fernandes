@@ -1,0 +1,18 @@
+# Soraia Fernandes
+
+> Loja de vestidos de festa e moda feminina. Peças selecionadas com curadoria para todas as ocasiões, compra online com entrega para todo o Brasil e atendimento pelo WhatsApp.
+
+A Soraia Fernandes é uma loja física e online especializada em vestidos de festa e moda feminina. Trabalhamos com curadoria de peças elegantes para festas, casamentos, formaturas e ocasiões especiais, com atendimento humanizado pelo WhatsApp e envio para todo o Brasil.
+
+## Páginas
+
+- [Início](/): Página inicial com destaques, categorias e novidades.
+- [Coleção](/colecao): Catálogo completo com filtros por categoria, cor e tamanho.
+- [Sobre](/sobre): História da Soraia Fernandes e nossos diferenciais.
+- [Trocas e Devoluções](/trocas-e-devolucoes): Política de trocas e devoluções.
+- [Privacidade](/privacidade): Política de privacidade e uso de dados.
+- [Termos](/termos): Termos e condições de uso.
+
+## Opcional
+
+- [Acompanhar pedido](/pedido/acompanhar): Consulta pública de status de pedido.
