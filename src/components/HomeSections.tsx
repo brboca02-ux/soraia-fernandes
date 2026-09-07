@@ -44,10 +44,8 @@ const diferenciais = [
 ];
 
 const HERO_SLIDES = [
-  { src: "/hero-1.png", alt: "Vestido de Festa Soraia Fernandes" },
-  { src: "/hero-2.png", alt: "Moda Festa Soraia Fernandes" },
-  { src: "/hero-3.jpeg", alt: "Vestidos Exclusivos Soraia Fernandes" },
-  { src: "/hero-4.jpeg", alt: "Aluguel de Vestidos Soraia Fernandes" },
+  { src: "/hero-3.jpeg", alt: "Vestido de Festa Soraia Fernandes" },
+  { src: "/hero-4.jpeg", alt: "Moda Festa Soraia Fernandes" },
 ];
 
 export function HomeHero() {
@@ -56,7 +54,7 @@ export function HomeHero() {
   React.useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
@@ -67,36 +65,37 @@ export function HomeHero() {
           Vestidos Femininos — Compra e Aluguel — Soraia Fernandes Joinville
         </h1>
 
-        <div className="relative w-full overflow-hidden flex items-center justify-center h-[56vw] min-h-[320px] max-h-[90vh]">
+        {/* Container com proporção 16:9 nas imagens originais, sem cortar */}
+        <div className="relative w-full overflow-hidden" style={{ aspectRatio: "16/9" }}>
           {HERO_SLIDES.map((slide, i) => (
             <img
               key={slide.src}
               src={slide.src}
               alt={slide.alt}
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-1000 ${
                 i === current ? "opacity-100" : "opacity-0"
               }`}
             />
           ))}
 
-          {/* Overlay escuro */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+          {/* Overlay só na parte inferior para legibilidade dos botões */}
+          <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 to-transparent" />
 
           {/* Indicadores */}
-          <div className="absolute bottom-20 md:bottom-24 left-1/2 -translate-x-1/2 flex gap-2">
+          <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 flex gap-2 z-10">
             {HERO_SLIDES.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
                 className={`h-1 rounded-full transition-all duration-300 ${
-                  i === current ? "w-6 bg-gold" : "w-2 bg-white/40"
+                  i === current ? "w-6 bg-gold" : "w-2 bg-white/50"
                 }`}
                 aria-label={`Slide ${i + 1}`}
               />
             ))}
           </div>
 
-          <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-8 md:pb-14">
+          <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-6 md:pb-10 z-10">
             <div className="max-w-2xl w-full px-6 text-center">
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
                 <Button
