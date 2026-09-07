@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AlugarRouteImport } from './routes/alugar'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ColecaoRouteImport } from './routes/colecao'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -54,6 +55,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlugarRoute = AlugarRouteImport.update({
+  id: '/alugar',
+  path: '/alugar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -207,6 +213,7 @@ const ApiPublicImgSplatRoute = ApiPublicImgSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/alugar': typeof AlugarRoute
   '/checkout': typeof CheckoutRoute
   '/colecao': typeof ColecaoRoute
   '/dashboard': typeof DashboardRoute
@@ -240,6 +247,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/alugar': typeof AlugarRoute
   '/checkout': typeof CheckoutRoute
   '/colecao': typeof ColecaoRoute
   '/dashboard': typeof DashboardRoute
@@ -275,6 +283,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRoute
+  '/alugar': typeof AlugarRoute
   '/checkout': typeof CheckoutRoute
   '/colecao': typeof ColecaoRoute
   '/dashboard': typeof DashboardRoute
@@ -310,6 +319,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/alugar'
     | '/checkout'
     | '/colecao'
     | '/dashboard'
@@ -343,6 +353,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/alugar'
     | '/checkout'
     | '/colecao'
     | '/dashboard'
@@ -377,6 +388,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/admin'
+    | '/alugar'
     | '/checkout'
     | '/colecao'
     | '/dashboard'
@@ -412,6 +424,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRoute: typeof AdminRoute
+  AlugarRoute: typeof AlugarRoute
   CheckoutRoute: typeof CheckoutRoute
   ColecaoRoute: typeof ColecaoRoute
   DashboardRoute: typeof DashboardRoute
@@ -463,6 +476,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alugar': {
+      id: '/alugar'
+      path: '/alugar'
+      fullPath: '/alugar'
+      preLoaderRoute: typeof AlugarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {
@@ -686,6 +706,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRoute: AdminRoute,
+  AlugarRoute: AlugarRoute,
   CheckoutRoute: CheckoutRoute,
   ColecaoRoute: ColecaoRoute,
   DashboardRoute: DashboardRoute,
