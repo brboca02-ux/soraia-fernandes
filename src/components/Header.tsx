@@ -106,12 +106,12 @@ export function Header() {
         >
           <Menu className="h-6 w-6" />
         </button>
-        <Link to="/" className="flex flex-col items-center tap-target group" aria-label="J&S Store">
+        <Link to="/" className="flex flex-col items-center tap-target group" aria-label="Soraia Fernandes">
           <span className="font-display font-bold text-2xl sm:text-3xl tracking-[0.1em] text-gold transition-transform group-hover:scale-105">
-            J&S
+            SORAIA
           </span>
           <span className="text-[7px] tracking-[0.3em] uppercase text-silver font-medium -mt-1 opacity-80">
-            STORE
+            FERNANDES
           </span>
         </Link>
         <div className="hidden md:flex flex-1 max-w-md">
@@ -119,7 +119,7 @@ export function Header() {
         </div>
         <div className="flex items-center gap-1 sm:gap-4">
           <a
-            href={buildWhatsAppLink("Olá! Vim pelo site da J&S Store e gostaria de ajuda.")}
+            href={buildWhatsAppLink("Olá! Vim pelo site da Soraia Fernandes e gostaria de ajuda.")}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="WhatsApp"
@@ -247,8 +247,8 @@ export function Header() {
           <aside className="absolute left-0 top-0 h-full w-[85%] max-w-sm bg-background text-foreground shadow-2xl flex flex-col animate-in slide-in-from-left">
             <div className="flex items-center justify-between px-5 h-14 border-b border-gold/20">
               <div className="flex flex-col items-start leading-none">
-                <span className="font-display font-bold text-xl tracking-[0.1em] text-gold uppercase">J&S</span>
-                <span className="text-[8px] tracking-[0.4em] uppercase text-silver font-medium">STORE</span>
+                <span className="font-display font-bold text-xl tracking-[0.1em] text-gold uppercase">SORAIA</span>
+                <span className="text-[8px] tracking-[0.4em] uppercase text-silver font-medium">FERNANDES</span>
               </div>
               <button aria-label="Fechar" onClick={() => setOpen(false)} className="h-11 w-11 -mr-2 flex items-center justify-center text-foreground hover:text-gold transition">
                 <X className="h-6 w-6" />
@@ -346,7 +346,7 @@ export function Header() {
               </Link>
             </nav>
             <a
-              href={buildWhatsAppLink("Olá! Vim pelo site da J&S Store e gostaria de ajuda.")}
+              href={buildWhatsAppLink("Olá! Vim pelo site da Soraia Fernandes e gostaria de ajuda.")}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => track.whatsappClick("mobile-menu")}

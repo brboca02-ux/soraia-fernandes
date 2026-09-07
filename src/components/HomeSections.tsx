@@ -8,7 +8,7 @@ import { Truck, RefreshCcw, ShieldCheck, MessageCircle, MapPin, Clock, Instagram
 import { buildWhatsAppLink, STORE_INFO } from "@/lib/shopify";
 import { track } from "@/lib/analytics";
 
-export const INSTAGRAM_HANDLE = "jes.storejoinville";
+export const INSTAGRAM_HANDLE = "soraiafernandesmodafesta";
 export const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}/`;
 
 const categories = [
@@ -272,7 +272,7 @@ export function BestSellersSection() {
   return (
     <section className="section-compact bg-background">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
-        <SectionHeader kicker="Os queridinhos da loja" title="Mais Vendidos" subtitle="As peças preferidas pelas clientes da J&S Store." link={{ to: "/colecao", label: "Ver todos", c: "mais-vendidos" }} />
+        <SectionHeader kicker="Os queridinhos da loja" title="Mais Vendidos" subtitle="As peças preferidas pelas clientes da Soraia Fernandes." link={{ to: "/colecao", label: "Ver todos", c: "mais-vendidos" }} />
         <ProductGrid sortKey="BEST_SELLING" first={12} columns={{ mobile: 2, tablet: 3, lg: 5, desktop: 6 }} />
       </div>
     </section>
@@ -343,7 +343,7 @@ export function LojaFisicaSection() {
         <div className="space-y-5 order-1 md:order-2">
           <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">Visite nossa loja</p>
           <h2 id="loja-titulo" className="font-display font-semibold text-3xl md:text-4xl tracking-tight">
-            Loja J&S Store — Joinville/SC
+            Soraia Fernandes — Moda Festa
           </h2>
           <div className="space-y-2 text-sm text-muted-foreground leading-relaxed">
             <p className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-foreground shrink-0" /> {STORE_INFO.street} — {STORE_INFO.city}/{STORE_INFO.region}</p>
