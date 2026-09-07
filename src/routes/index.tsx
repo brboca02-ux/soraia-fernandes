@@ -11,34 +11,29 @@ import {
 } from "@/components/HomeSections";
 import { ShowcaseCarousel } from "@/components/ShowcaseCarousel";
 import { NewsletterSection } from "@/components/NewsletterCapture";
-import heroCouple from "@/assets/hero-couple.jpg.asset.json?url";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Soraia Fernandes — Vestidos de Festa e Moda Feminina" },
-      { name: "description", content: "Soraia Fernandes: vestidos de festa e moda feminina para todas as ocasiões. Compre online com envio para todo o Brasil." },
-      { name: "keywords", content: "vestidos de festa, moda feminina, Soraia Fernandes, vestido para casamento, vestido para formatura" },
+      { title: "Soraia Fernandes — Vestidos Femininos: Compra e Aluguel em Joinville/SC" },
+      { name: "description", content: "Soraia Fernandes: vestidos femininos exclusivos para compra e aluguel em Joinville. Casamentos, formaturas, festas e ocasiões especiais. Atendimento personalizado." },
+      { name: "keywords", content: "vestidos femininos Joinville, aluguel de vestidos Joinville, vestidos para formatura, vestidos para casamento, Soraia Fernandes" },
       { name: "geo.region", content: "BR-SC" },
       { name: "geo.placename", content: "Joinville" },
-      { property: "og:title", content: "Soraia Fernandes — Vestidos de Festa e Moda Feminina" },
-      { property: "og:description", content: "Soraia Fernandes: vestidos de festa e moda feminina para todas as ocasiões. Compre online com envio para todo o Brasil." },
+      { property: "og:title", content: "Soraia Fernandes — Vestidos Femininos: Compra e Aluguel em Joinville/SC" },
+      { property: "og:description", content: "Vestidos exclusivos para compra e aluguel. Casamentos, formaturas e eventos especiais em Joinville." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.soraiafernandes.com.br/" },
+      { property: "og:url", content: "https://www.jesstorejoinville.com.br/" },
       { property: "og:locale", content: "pt_BR" },
     ],
     links: [
-      { rel: "canonical", href: "https://www.soraiafernandes.com.br/" },
-
-      // Preload LCP hero with high priority
-      { rel: "preload", as: "image", href: heroCouple, fetchPriority: "high" },
+      { rel: "canonical", href: "https://www.jesstorejoinville.com.br/" },
     ],
   }),
   component: Index,
 });
 
 function Index() {
-
   return (
     <>
       <HomeHero />

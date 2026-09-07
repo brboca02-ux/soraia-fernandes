@@ -1,7 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import heroCouple from "@/assets/hero-couple.jpg.asset.json";
 import catFeminino from "@/assets/cat-feminino.webp.asset.json";
-import catMasculino from "@/assets/cat-masculino.webp.asset.json";
 import { useSiteMedia, type SiteMediaKey } from "@/lib/api/siteMedia";
 import { Button } from "@/components/ui/button";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -9,15 +7,32 @@ import { Truck, RefreshCcw, ShieldCheck, MessageCircle, MapPin, Clock, Instagram
 import { buildWhatsAppLink, STORE_INFO } from "@/lib/shopify";
 import { track } from "@/lib/analytics";
 
-export const INSTAGRAM_HANDLE = "soraiafernandes";
+export const INSTAGRAM_HANDLE = "jes.storejoinville";
 export const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}/`;
 
-// Imagens do catálogo real, servidas pelo proxy público do storage.
-const CAT_IMG = (slug: string) => `/api/public/img/catalogo/${slug}.jpg`;
-
 const categories = [
-  { label: "Feminino", alt: "Categoria Moda Feminina Soraia Fernandes", img: catFeminino.url, origin: "50% 18%", q: "feminino", mediaKey: "cat_feminino" as SiteMediaKey, desc: "Elegância no dia a dia" },
-  { label: "Masculino", alt: "Categoria Moda Masculina Soraia Fernandes", img: catMasculino.url, origin: "50% 12%", q: "masculino", mediaKey: "cat_masculino" as SiteMediaKey, desc: "Clássico com atitude" },
+  {
+    label: "Comprar Vestidos",
+    alt: "Vestidos Femininos para Compra — Soraia Fernandes",
+    img: catFeminino.url,
+    origin: "50% 18%",
+    to: "/colecao" as const,
+    search: { c: "feminino" },
+    mediaKey: "cat_feminino" as SiteMediaKey,
+    desc: "Leve para sempre",
+    badge: null,
+  },
+  {
+    label: "Alugar Vestidos",
+    alt: "Aluguel de Vestidos Femininos — Soraia Fernandes",
+    img: catFeminino.url,
+    origin: "50% 30%",
+    to: "/alugar" as const,
+    search: undefined,
+    mediaKey: "cat_feminino" as SiteMediaKey,
+    desc: "Para ocasiões especiais",
+    badge: "NOVO",
+  },
 ];
 
 const diferenciais = [
@@ -31,45 +46,43 @@ export function HomeHero() {
   return (
     <section className="relative overflow-hidden">
       <div className="relative w-full px-0">
-        {/* Mobile H1 - SEO first, hidden visually to save space but kept for indexing */}
+        {/* SEO H1 invisível para indexação */}
         <h1 className="sr-only">
-          Soraia Fernandes — Vestidos de Festa e Moda Feminina
+          Vestidos Femininos — Compra e Aluguel — Soraia Fernandes Joinville
         </h1>
 
-        <div className="relative w-full overflow-hidden flex items-center justify-center sm:aspect-video lg:aspect-[21/9] h-auto">
-          <img
-            src={heroCouple.url}
-            alt="Soraia Fernandes — Vestidos de Festa e Moda Feminina"
-            width={1376}
-            height={768}
-            fetchPriority="high"
-            className="w-full h-full object-cover sm:object-cover sm:object-center opacity-90 transition-transform duration-[2000ms] hover:scale-105"
+        <div className="relative w-full overflow-hidden flex items-center justify-center sm:aspect-video lg:aspect-[21/9] h-[60vw] min-h-[300px] max-h-[92vh]">
+          <video
+            src="/hero-video.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover opacity-90"
           />
-          {/* Overlay escuro estratégico reforçado na base para legibilidade dos botões */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-          
-          {/* Desktop SEO H1 */}
-          <h1 className="sr-only sm:not-sr-only sm:absolute sm:left-10 sm:top-1/3 sm:max-w-xl sm:text-5xl lg:text-7xl sm:font-bold sm:tracking-tighter sm:text-white sm:leading-[0.9] hidden">
-            MODA PARA O<br />SEU DIA A DIA.
-          </h1>
-          
-          <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-6 md:pb-12">
+          {/* Overlay escuro */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+          <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-8 md:pb-14">
             <div className="max-w-2xl w-full px-6 text-center">
+              <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-gold mb-4 opacity-90">
+                Soraia Fernandes
+              </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
                 <Button
                   size="xl"
                   className="bg-gold hover:bg-gold/90 text-primary-foreground rounded-none px-8 lg:px-12 font-semibold shadow-xl h-12 sm:h-12 text-xs tracking-widest uppercase"
                   asChild
                 >
-                  <Link to="/colecao" search={{ c: "feminino" }}>Comprar Feminino</Link>
+                  <Link to="/colecao" search={{ c: "feminino" }}>Comprar Vestidos</Link>
                 </Button>
                 <Button
                   size="xl"
                   variant="outline"
-                  className="bg-transparent border-white/40 text-white hover:bg-white hover:text-black rounded-none px-8 lg:px-12 font-semibold shadow-xl h-12 sm:h-12 transition-all text-xs tracking-widest uppercase"
+                  className="bg-transparent border-white/60 text-white hover:bg-white hover:text-black rounded-none px-8 lg:px-12 font-semibold shadow-xl h-12 sm:h-12 transition-all text-xs tracking-widest uppercase"
                   asChild
                 >
-                  <Link to="/colecao" search={{ c: "masculino" }}>Comprar Masculino</Link>
+                  <Link to="/alugar">✦ Alugar Vestido</Link>
                 </Button>
               </div>
             </div>
@@ -131,59 +144,79 @@ export function CategoriesSection() {
     <section className="py-4 md:py-6 bg-background">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
         <div className="mb-5 md:mb-6">
-          <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-gold mb-2">Escolha por estilo</p>
+          <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-gold mb-2">Escolha como quer usar</p>
           <div className="flex items-end justify-between">
             <div>
-              <h2 className="font-display font-semibold text-2xl md:text-4xl tracking-tight">Categorias</h2>
-              <p className="text-sm text-muted-foreground mt-2">Duas curadorias, uma só identidade.</p>
+              <h2 className="font-display font-semibold text-2xl md:text-4xl tracking-tight">Vestidos Femininos</h2>
+              <p className="text-sm text-muted-foreground mt-2">Compre para guardar ou alugue para ocasiões especiais.</p>
             </div>
             <Link to="/colecao" search={{ c: undefined }} className="hidden md:inline text-xs font-medium text-gold hover:underline underline-offset-4">
               Ver tudo →
             </Link>
           </div>
         </div>
-        
-        <div className="grid grid-cols-2 gap-4 md:gap-6">
-          {categories.map((c) => (
-            <Link
-              key={c.label}
-              to="/colecao"
-              search={{ c: c.q }}
-              className="group relative h-[180px] md:h-[240px] overflow-hidden bg-secondary shadow-lg"
-            >
-              <picture>
-                <source srcSet={`${media[c.mediaKey] ?? c.img}?width=600&format=webp`} type="image/webp" />
-                <img
-                  src={media[c.mediaKey] ?? c.img}
-                  alt={c.alt}
-                  width={600}
-                  height={300}
-                  className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.1]"
-                  style={{ objectPosition: c.origin }}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </picture>
-              <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black via-black/80 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
-              <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end px-3 pb-2.5 md:pb-4 text-center">
-                <h3 className="font-display font-semibold text-lg md:text-2xl text-white tracking-wide uppercase mb-0.5">
-                  {c.label}
-                </h3>
-                <p className="text-[9px] md:text-[10px] text-gold/90 font-medium tracking-[0.2em] uppercase mb-1.5">
-                  {c.desc}
-                </p>
-                <div className="hidden md:block h-[1px] w-8 bg-gold/40 mb-1.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-                <p className="hidden md:block text-[8px] md:text-[9px] text-white/70 font-medium tracking-[0.2em] uppercase transition-all duration-500 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100">
-                  Explorar curadoria →
-                </p>
-              </div>
 
-            </Link>
-          ))}
+        <div className="grid grid-cols-2 gap-4 md:gap-6">
+          {categories.map((c) => {
+            const imgSrc = media[c.mediaKey] ?? c.img;
+            const inner = (
+              <>
+                <picture>
+                  <source srcSet={`${imgSrc}?width=600&format=webp`} type="image/webp" />
+                  <img
+                    src={imgSrc}
+                    alt={c.alt}
+                    width={600}
+                    height={300}
+                    className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.1]"
+                    style={{ objectPosition: c.origin }}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
+                <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black via-black/80 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end px-3 pb-2.5 md:pb-4 text-center">
+                  {c.badge && (
+                    <span className="mb-1 text-[8px] font-bold tracking-[0.2em] bg-gold text-primary-foreground px-2 py-0.5">
+                      {c.badge}
+                    </span>
+                  )}
+                  <h3 className="font-display font-semibold text-lg md:text-2xl text-white tracking-wide uppercase mb-0.5">
+                    {c.label}
+                  </h3>
+                  <p className="text-[9px] md:text-[10px] text-gold/90 font-medium tracking-[0.2em] uppercase mb-1.5">
+                    {c.desc}
+                  </p>
+                  <div className="hidden md:block h-[1px] w-8 bg-gold/40 mb-1.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+                  <p className="hidden md:block text-[8px] md:text-[9px] text-white/70 font-medium tracking-[0.2em] uppercase transition-all duration-500 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100">
+                    Explorar →
+                  </p>
+                </div>
+              </>
+            );
+
+            return c.search ? (
+              <Link
+                key={c.label}
+                to={c.to}
+                search={c.search as never}
+                className="group relative h-[180px] md:h-[240px] overflow-hidden bg-secondary shadow-lg"
+              >
+                {inner}
+              </Link>
+            ) : (
+              <Link
+                key={c.label}
+                to={c.to}
+                className="group relative h-[180px] md:h-[240px] overflow-hidden bg-secondary shadow-lg"
+              >
+                {inner}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>
-
   );
 }
 
@@ -210,7 +243,7 @@ export function BestSellersSection() {
   return (
     <section className="section-compact bg-background">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
-        <SectionHeader kicker="Os queridinhos da loja" title="Mais Vendidos" subtitle="As peças preferidas pelas clientes da Soraia Fernandes." link={{ to: "/colecao", label: "Ver todos", c: "mais-vendidos" }} />
+        <SectionHeader kicker="Os queridinhos da loja" title="Mais Vendidos" subtitle="As peças preferidas pelas clientes da J&S Store." link={{ to: "/colecao", label: "Ver todos", c: "mais-vendidos" }} />
         <ProductGrid sortKey="BEST_SELLING" first={12} columns={{ mobile: 2, tablet: 3, lg: 5, desktop: 6 }} />
       </div>
     </section>
@@ -243,24 +276,21 @@ export function LookbookSection() {
   return (
     <section className="section-compact bg-background text-foreground">
       <div className="max-w-3xl mx-auto px-6 lg:px-10 text-center space-y-6">
-        <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-foreground/60">Editorial Soraia Fernandes</p>
+        <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-foreground/60">Soraia Fernandes</p>
         <h2 className="font-display font-semibold text-3xl md:text-5xl leading-tight">
-          Moda para o seu dia, na sua cidade.
+          Vestidos para cada momento especial.
         </h2>
         <p className="text-base text-foreground/75 leading-relaxed max-w-xl mx-auto">
-          Há anos vestindo mulheres e homens de Joinville com peças selecionadas para o
-          dia a dia, trabalho e ocasiões especiais. Atendimento próximo, curadoria honesta
-          e o cuidado de uma loja física feita por gente da cidade.
+          Curadoria exclusiva de vestidos femininos em Joinville. Compre para guardar ou alugue para aquele
+          momento único — casamento, formatura, festa. Atendimento próximo e consultoria personalizada
+          para você brilhar do jeito certo.
         </p>
         <div className="pt-2 flex flex-wrap gap-3 justify-center">
           <Button size="xl" className="bg-gold hover:bg-gold/90 text-primary-foreground rounded-none px-8" asChild>
-            <Link to="/colecao" search={{ c: undefined }}>Explorar coleção</Link>
+            <Link to="/colecao" search={{ c: undefined }}>Ver Vestidos</Link>
           </Button>
           <Button size="xl" variant="outline" className="bg-transparent border-gold text-gold hover:bg-gold hover:text-primary-foreground rounded-none px-8" asChild>
-            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">
-              <Instagram className="w-4 h-4 mr-2" strokeWidth={1.5} />
-              Siga @{INSTAGRAM_HANDLE}
-            </a>
+            <Link to="/alugar">✦ Alugar Vestido</Link>
           </Button>
         </div>
       </div>
@@ -284,7 +314,7 @@ export function LojaFisicaSection() {
         <div className="space-y-5 order-1 md:order-2">
           <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">Visite nossa loja</p>
           <h2 id="loja-titulo" className="font-display font-semibold text-3xl md:text-4xl tracking-tight">
-            Soraia Fernandes — Joinville/SC
+            Loja J&S Store — Joinville/SC
           </h2>
           <div className="space-y-2 text-sm text-muted-foreground leading-relaxed">
             <p className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-foreground shrink-0" /> {STORE_INFO.street} — {STORE_INFO.city}/{STORE_INFO.region}</p>
