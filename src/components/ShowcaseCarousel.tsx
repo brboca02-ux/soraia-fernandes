@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+﻿import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useProductsStore } from "@/stores/productsStore";
 import { productToShopify } from "@/lib/mockProducts";
 import { ProductCard } from "./ProductCard";
@@ -36,7 +36,7 @@ export function ShowcaseCarousel() {
       if (!scrollRef.current) return;
       const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
       
-      // Se chegou no fim, volta pro começo de forma suave
+      // Se chegou no fim, volta pro comeÃ§o de forma suave
       if (scrollLeft + clientWidth >= scrollWidth - 10) {
         scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
       } else {
@@ -55,7 +55,7 @@ export function ShowcaseCarousel() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <p className="text-[10px] font-medium uppercase tracking-[0.24em] text-muted-foreground mb-1">Destaques</p>
-            <h2 className="font-display font-semibold text-2xl tracking-tight">Vitrine J&S</h2>
+            <h2 className="font-display font-semibold text-2xl tracking-tight">Vitrine Soraia Fernandes</h2>
           </div>
           <div className="flex gap-2">
             <button
@@ -68,7 +68,7 @@ export function ShowcaseCarousel() {
             <button
               onClick={() => scroll("right")}
               className="tap-target rounded-full border border-border hover:bg-muted transition-colors"
-              aria-label="Próximo"
+              aria-label="PrÃ³ximo"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -92,5 +92,6 @@ export function ShowcaseCarousel() {
     </section>
   );
 }
+
 
 
