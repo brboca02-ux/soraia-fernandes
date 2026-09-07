@@ -6,6 +6,7 @@ import { CartDrawer } from "./CartDrawer";
 import { SearchBox } from "./SearchBox";
 import { buildWhatsAppLink } from "@/lib/shopify";
 import { track } from "@/lib/analytics";
+import { BrandLogo } from "@/components/BrandLogo";
 
 type SearchParam = { c?: string };
 type LinkItem = { label: string; c: string; highlight?: boolean };
@@ -15,15 +16,15 @@ type MegaContent = {
   promo?: { title: string; subtitle?: string; cta: string; c: string };
 };
 
-const COMPRAR: MegaContent = {
+const FEMININO: MegaContent = {
   columns: [
     {
-      title: "Vestidos",
+      title: "Roupas",
       items: [
-        { label: "Vestidos Longos", c: "vestido-longo" },
-        { label: "Vestidos Midi", c: "vestido-midi" },
-        { label: "Vestidos Curtos", c: "vestido-curto" },
-        { label: "Ver tudo", c: "feminino" },
+        { label: "Blusas e Tricôs", c: "blusa" },
+        { label: "Calças", c: "calça" },
+        { label: "Shorts", c: "short" },
+        { label: "Ver tudo Feminino", c: "feminino" },
       ],
     },
     {
@@ -36,16 +37,60 @@ const COMPRAR: MegaContent = {
   ],
   promo: {
     title: "Toda semana novidades",
-    subtitle: "Vestidos recém-chegados na Soraia Fernandes",
-    cta: "Ver Coleção",
-    c: "feminino",
+    subtitle: "Peças recém-chegadas na Soraia Fernandes",
+    cta: "Comprar Agora",
+    c: "recebidos-da-semana",
   },
 };
 
-type MenuKey = "comprar" | null;
+const MASCULINO: MegaContent = {
+  columns: [
+    {
+      title: "Roupas",
+      items: [
+        { label: "Camisas Polo", c: "polo" },
+        { label: "Camisetas", c: "camiseta" },
+        { label: "Calças Jeans", c: "jeans" },
+        { label: "Ver tudo Masculino", c: "masculino" },
+      ],
+    },
+    {
+      title: "Coleções",
+      items: [
+        { label: "Recebidos da Semana", c: "recebidos-da-semana" },
+        { label: "Promoções", c: "promocoes", highlight: true },
+      ],
+    },
+  ],
+};
+
+
+const PROMOCOES: MegaContent = {
+  columns: [
+    {
+      title: "Ofertas",
+      items: [
+        { label: "Todas as promoções", c: "promocoes", highlight: true },
+        { label: "Últimas oportunidades", c: "ultimas", highlight: true },
+        { label: "Recebidos em promoção", c: "recebidos-promo", highlight: true },
+      ],
+    },
+  ],
+  promo: {
+    title: "Promoções da Semana",
+    subtitle: "Aproveite enquanto durar o estoque",
+    cta: "Ver Ofertas",
+    c: "promocoes",
+  },
+};
+
+
+type MenuKey = "feminino" | "masculino" | "promocoes" | null;
 
 const MENUS: { key: Exclude<MenuKey, null>; label: string; content: MegaContent; highlight?: boolean; badge?: string }[] = [
-  { key: "comprar", label: "Comprar", content: COMPRAR },
+  { key: "feminino", label: "Feminino", content: FEMININO },
+  { key: "masculino", label: "Masculino", content: MASCULINO },
+  { key: "promocoes", label: "Promoções", content: PROMOCOES, highlight: true, badge: "PROMOÇÃO" },
 ];
 
 
@@ -98,7 +143,7 @@ export function Header() {
           ))}
         </div>
       </div>
-      <div className="max-w-[1400px] mx-auto px-4 lg:px-8 h-14 sm:h-20 flex items-center justify-between gap-3 sm:gap-6">
+      <div className="max-w-[1400px] mx-auto px-4 lg:px-8 h-20 sm:h-24 flex items-center justify-between gap-3 sm:gap-6">
         <button
           aria-label="Abrir menu"
           onClick={() => setOpen(true)}
@@ -106,20 +151,15 @@ export function Header() {
         >
           <Menu className="h-6 w-6" />
         </button>
-        <Link to="/" className="flex flex-col items-center tap-target group" aria-label="J&S Store">
-          <span className="font-display font-bold text-2xl sm:text-3xl tracking-[0.1em] text-gold transition-transform group-hover:scale-105">
-            J&S
-          </span>
-          <span className="text-[7px] tracking-[0.3em] uppercase text-silver font-medium -mt-1 opacity-80">
-            STORE
-          </span>
+        <Link to="/" className="flex items-center tap-target group shrink-0" aria-label="Soraia Fernandes Moda Festa">
+          <BrandLogo eager variant="header" className="h-12 w-auto sm:h-16 transition-transform group-hover:scale-[1.02]" />
         </Link>
         <div className="hidden md:flex flex-1 max-w-md">
           <SearchBox variant="dark" />
         </div>
         <div className="flex items-center gap-1 sm:gap-4">
           <a
-            href={buildWhatsAppLink("Olá! Vim pelo site da J&S Store e gostaria de ajuda.")}
+            href={buildWhatsAppLink("Olá! Vim pelo site da Soraia Fernandes e gostaria de ajuda.")}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="WhatsApp"
@@ -168,12 +208,6 @@ export function Header() {
           ))}
           <Link to="/colecao" search={{ c: "recebidos-da-semana" } as never} className="tap-target px-2 text-foreground/80 hover:text-gold transition">
             Recebidos da Semana
-          </Link>
-          <Link
-            to="/alugar"
-            className="tap-target px-2 font-semibold text-gold hover:text-gold/80 transition inline-flex items-center gap-1"
-          >
-            ✦ Alugar Vestido
           </Link>
           <Link to="/sobre" className="tap-target px-2 text-foreground/80 hover:text-gold transition">
             Sobre
@@ -245,11 +279,8 @@ export function Header() {
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-background/50" onClick={() => setOpen(false)} />
           <aside className="absolute left-0 top-0 h-full w-[85%] max-w-sm bg-background text-foreground shadow-2xl flex flex-col animate-in slide-in-from-left">
-            <div className="flex items-center justify-between px-5 h-14 border-b border-gold/20">
-              <div className="flex flex-col items-start leading-none">
-                <span className="font-display font-bold text-xl tracking-[0.1em] text-gold uppercase">J&S</span>
-                <span className="text-[8px] tracking-[0.4em] uppercase text-silver font-medium">STORE</span>
-              </div>
+            <div className="flex items-center justify-between px-5 h-20 border-b border-gold/20">
+              <BrandLogo eager variant="header" className="h-14 w-auto max-w-[190px]" />
               <button aria-label="Fechar" onClick={() => setOpen(false)} className="h-11 w-11 -mr-2 flex items-center justify-center text-foreground hover:text-gold transition">
                 <X className="h-6 w-6" />
               </button>
@@ -324,13 +355,6 @@ export function Header() {
                 Recebidos da Semana
               </Link>
               <Link
-                to="/alugar"
-                onClick={() => setOpen(false)}
-                className="block px-5 py-3 text-base font-semibold border-b border-gold/20 text-gold hover:text-gold/80 transition"
-              >
-                ✦ Alugar Vestido
-              </Link>
-              <Link
                 to="/sobre"
                 onClick={() => setOpen(false)}
                 className="block px-5 py-3 text-base font-semibold border-b border-gold/20 text-foreground hover:text-gold transition"
@@ -346,7 +370,7 @@ export function Header() {
               </Link>
             </nav>
             <a
-              href={buildWhatsAppLink("Olá! Vim pelo site da J&S Store e gostaria de ajuda.")}
+              href={buildWhatsAppLink("Olá! Vim pelo site da Soraia Fernandes e gostaria de ajuda.")}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => track.whatsappClick("mobile-menu")}
