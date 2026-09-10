@@ -17,8 +17,7 @@ export function Footer() {
             <BrandLogo className="h-auto w-64 md:w-72" />
           </Link>
           <p className="text-sm text-foreground/70 mt-5 leading-relaxed max-w-sm">
-            Moda feminina e masculina em Joinville. Curadoria honesta, atendimento próximo
-            e peças selecionadas para o seu dia a dia.
+            Vestidos exclusivos para os momentos mais especiais. Aluguel e venda de moda festa em Joinville/SC.
           </p>
           <div className="mt-7 max-w-sm">
             <p className={COL_TITLE}>Newsletter</p>
@@ -63,7 +62,7 @@ export function Footer() {
               </a>
             </li>
             <li>
-              <a href="https://www.instagram.com/soraiafernandes/" target="_blank" rel="noopener noreferrer" className={`${LINK} inline-flex items-center gap-2`}>
+              <a href="https://www.instagram.com/soraiafernandesmodafesta/" target="_blank" rel="noopener noreferrer" className={`${LINK} inline-flex items-center gap-2`}>
                 <Instagram className="h-4 w-4" strokeWidth={1.5} /> Instagram
               </a>
             </li>
@@ -96,7 +95,7 @@ export function Footer() {
 
       <div className="border-t border-background/10 py-6 text-center text-xs text-foreground/55 px-6">
         <p>
-          Soraia Fernandes · CNPJ 00.000.000/0001-00 · {STORE_INFO.street}, {STORE_INFO.city}/{STORE_INFO.region} · CEP {STORE_INFO.postalCode}
+          Soraia Fernandes · {STORE_INFO.street}, {STORE_INFO.city}/{STORE_INFO.region} · CEP {STORE_INFO.postalCode}
         </p>
         <p className="mt-1">© {new Date().getFullYear()} Soraia Fernandes. Todos os direitos reservados.</p>
       </div>
