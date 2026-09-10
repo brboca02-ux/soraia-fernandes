@@ -82,16 +82,20 @@ export function HomeHero() {
           <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 to-transparent" />
 
           {/* Indicadores */}
-          <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+          <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 flex items-center gap-1 z-10">
             {HERO_SLIDES.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
-                className={`h-1 rounded-full transition-all duration-300 ${
-                  i === current ? "w-6 bg-gold" : "w-2 bg-white/50"
-                }`}
+                className="inline-flex h-11 w-11 items-center justify-center"
                 aria-label={`Slide ${i + 1}`}
-              />
+              >
+                <span
+                  className={`block h-1 rounded-full transition-all duration-300 ${
+                    i === current ? "w-6 bg-gold" : "w-2 bg-white/50"
+                  }`}
+                />
+              </button>
             ))}
           </div>
 

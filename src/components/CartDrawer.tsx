@@ -39,7 +39,7 @@ export function CartDrawer() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button className="relative p-2 hover:opacity-70 transition" aria-label="Sacola">
+        <button className="relative inline-flex h-11 w-11 items-center justify-center hover:opacity-70 transition" aria-label="Sacola">
           <ShoppingBag className="h-5 w-5" strokeWidth={1.25} />
           {totalItems > 0 && (
             <span className="absolute -top-0.5 -right-0.5 bg-foreground text-background text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-medium">
