@@ -11,12 +11,12 @@ export const STORE_INFO = {
   city: "Joinville",
   region: "SC",
   country: "BR",
-  street: "Rua Carlos Emílio Alexandre Schwartz, 369",
-  postalCode: "89235-188",
-  phone: "+55 47 98446-8103",
-  whatsapp: "5547984468103",
+  street: "R. Evaldo Martin Junkes, 820 - Loja 4 - Aventureiro",
+  postalCode: "89225-673",
+  phone: "+55 47 99189-9393",
+  whatsapp: "5547991899393",
   mapsEmbed:
-    "https://www.google.com/maps?q=Rua+Carlos+Em%C3%ADlio+Alexandre+Schwartz+369%2C+Joinville%2C+Santa+Catarina%2C+Brazil+89235-188&output=embed",
+    "https://www.google.com/maps?q=R.+Evaldo+Martin+Junkes%2C+820+-+Loja+4+-+Aventureiro%2C+Joinville%2C+Santa+Catarina%2C+Brazil+89225-673&output=embed",
 };
 
 export interface ShopifyVariantNode {
