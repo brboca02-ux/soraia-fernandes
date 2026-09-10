@@ -66,7 +66,7 @@ export function HomeHero() {
         </h1>
 
         {/* Mantém o banner alto no celular, exibindo a arte completa sem recorte */}
-        <div className="relative w-full overflow-hidden aspect-[4/5] sm:aspect-[16/9]">
+        <div className="relative w-full overflow-hidden aspect-[2752/1536]">
           {HERO_SLIDES.map((slide, i) => (
             <img
               key={slide.src}
