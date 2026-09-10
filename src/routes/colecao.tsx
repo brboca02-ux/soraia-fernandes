@@ -68,7 +68,7 @@ function ColecaoPage() {
   const query = safe || undefined;
 
   const chip = (active: boolean) =>
-    `px-4 py-2 rounded-full text-sm border transition-colors ${
+    `inline-flex items-center justify-center min-h-11 px-4 py-2 rounded-full text-sm border transition-colors ${
       active
         ? "bg-foreground text-background border-foreground"
         : "bg-background text-foreground border-border hover:border-foreground"
@@ -92,11 +92,11 @@ function ColecaoPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <nav aria-label="breadcrumb" className="max-w-[1400px] mx-auto px-6 lg:px-10 pt-4 text-xs text-muted-foreground">
         <ol className="flex flex-wrap items-center gap-1.5">
-          <li><Link to="/" className="hover:text-foreground transition">Início</Link></li>
+          <li><Link to="/" className="inline-flex items-center min-h-11 pr-1 hover:text-foreground transition">Início</Link></li>
           <li aria-hidden="true">/</li>
           {seo ? (
             <>
-              <li><Link to="/colecao" search={{}} className="hover:text-foreground transition">Coleção</Link></li>
+              <li><Link to="/colecao" search={{}} className="inline-flex items-center min-h-11 px-1 hover:text-foreground transition">Coleção</Link></li>
               <li aria-hidden="true">/</li>
               <li className="text-foreground" aria-current="page">{seo.name}</li>
             </>
