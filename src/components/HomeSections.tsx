@@ -65,14 +65,14 @@ export function HomeHero() {
           Vestidos Femininos — Compra e Aluguel — Soraia Fernandes Joinville
         </h1>
 
-        {/* Container com proporção 16:9 nas imagens originais, sem cortar */}
+        {/* Mantém o banner alto no celular, exibindo a arte completa sem recorte */}
         <div className="relative w-full overflow-hidden aspect-[4/5] sm:aspect-[16/9]">
           {HERO_SLIDES.map((slide, i) => (
             <img
               key={slide.src}
               src={slide.src}
               alt={slide.alt}
-              className={`absolute inset-0 w-full h-full object-cover object-[center_25%] sm:object-contain bg-black transition-opacity duration-1000 ${
+              className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-1000 ${
                 i === current ? "opacity-100" : "opacity-0"
               }`}
             />
