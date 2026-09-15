@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "@tanstack/react-router";
 import catFeminino from "@/assets/cat-feminino.webp.asset.json";
+import homeBanner from "@/assets/banner-home-soraia.jpeg.asset.json";
 import { useSiteMedia, type SiteMediaKey } from "@/lib/api/siteMedia";
 import { Button } from "@/components/ui/button";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -126,7 +127,7 @@ export function TrustStrip() {
   return (
     <div className="bg-black border-y border-gold/10 py-3 md:py-6">
       <div className="max-w-[1400px] mx-auto px-4 lg:px-10">
-        <div className="flex overflow-x-auto sm:grid sm:grid-cols-3 gap-6 md:gap-12 no-scrollbar">
+        <div className="grid grid-cols-3 gap-3 md:gap-12 no-scrollbar">
           {[
             { 
               i: Truck, 
@@ -144,15 +145,15 @@ export function TrustStrip() {
               d: "Sua compra protegida com as melhores tecnologias de segurança." 
             }
           ].map((item, idx) => (
-            <div key={idx} className="flex flex-col items-center text-center space-y-2 group flex-shrink-0 min-w-[240px] sm:min-w-0">
+            <div key={idx} className="flex min-w-0 flex-col items-center text-center space-y-2 group">
               <div className="p-2 rounded-full bg-gold/5 border border-gold/10 group-hover:border-gold/30 transition-colors">
                 <item.i className="h-4 w-4 md:h-6 md:w-6 text-gold" strokeWidth={1.2} />
               </div>
-              <div>
-                <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-gold mb-0.5">
+              <div className="min-w-0">
+                <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-[0.12em] md:tracking-widest text-gold mb-0.5">
                   {item.t}
                 </h3>
-                <p className="text-[9px] md:text-xs text-muted-foreground/80 leading-relaxed max-w-[200px] mx-auto">
+                <p className="hidden sm:block text-[9px] md:text-xs text-muted-foreground/80 leading-relaxed max-w-[200px] mx-auto">
                   {item.d}
                 </p>
               </div>
