@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "@tanstack/react-router";
 import catFeminino from "@/assets/cat-feminino.webp.asset.json";
 import { useSiteMedia, type SiteMediaKey } from "@/lib/api/siteMedia";
@@ -7,7 +8,7 @@ import { Truck, RefreshCcw, ShieldCheck, MessageCircle, MapPin, Clock, Instagram
 import { buildWhatsAppLink, STORE_INFO } from "@/lib/shopify";
 import { track } from "@/lib/analytics";
 
-export const INSTAGRAM_HANDLE = "jes.storejoinville";
+export const INSTAGRAM_HANDLE = "soraiafernandesmodafesta";
 export const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}/`;
 
 const categories = [
@@ -42,32 +43,59 @@ const diferenciais = [
   { i: MessageCircle, t: "Atendimento humanizado", d: "Consultoras dedicadas" },
 ];
 
+const HERO_SLIDES = [
+  { src: "/home.jpeg", alt: "Vestido de Festa Soraia Fernandes" },
+];
+
 export function HomeHero() {
+  const [current, setCurrent] = React.useState(0);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section className="relative overflow-hidden">
       <div className="relative w-full px-0">
-        {/* SEO H1 invisível para indexação */}
         <h1 className="sr-only">
           Vestidos Femininos — Compra e Aluguel — Soraia Fernandes Joinville
         </h1>
 
-        <div className="relative w-full overflow-hidden flex items-center justify-center sm:aspect-video lg:aspect-[21/9] h-[60vw] min-h-[300px] max-h-[92vh]">
-          <video
-            src="/hero-video.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover opacity-90"
-          />
-          {/* Overlay escuro */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        {/* Container com proporção 16:9 nas imagens originais, sem cortar */}
+        <div className="relative w-full overflow-hidden" style={{ aspectRatio: "16/9" }}>
+          {HERO_SLIDES.map((slide, i) => (
+            <img
+              key={slide.src}
+              src={slide.src}
+              alt={slide.alt}
+              className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-1000 ${
+                i === current ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ))}
 
-          <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-8 md:pb-14">
+          {/* Overlay só na parte inferior para legibilidade dos botões */}
+          <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 to-transparent" />
+
+          {/* Indicadores */}
+          <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            {HERO_SLIDES.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`h-1 rounded-full transition-all duration-300 ${
+                  i === current ? "w-6 bg-gold" : "w-2 bg-white/50"
+                }`}
+                aria-label={`Slide ${i + 1}`}
+              />
+            ))}
+          </div>
+
+          <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-6 md:pb-10 z-10">
             <div className="max-w-2xl w-full px-6 text-center">
-              <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-gold mb-4 opacity-90">
-                Soraia Fernandes
-              </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
                 <Button
                   size="xl"
@@ -243,7 +271,7 @@ export function BestSellersSection() {
   return (
     <section className="section-compact bg-background">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
-        <SectionHeader kicker="Os queridinhos da loja" title="Mais Vendidos" subtitle="As peças preferidas pelas clientes da J&S Store." link={{ to: "/colecao", label: "Ver todos", c: "mais-vendidos" }} />
+        <SectionHeader kicker="Os queridinhos da loja" title="Mais Vendidos" subtitle="As peças preferidas pelas clientes da Soraia Fernandes." link={{ to: "/colecao", label: "Ver todos", c: "mais-vendidos" }} />
         <ProductGrid sortKey="BEST_SELLING" first={12} columns={{ mobile: 2, tablet: 3, lg: 5, desktop: 6 }} />
       </div>
     </section>
@@ -314,7 +342,7 @@ export function LojaFisicaSection() {
         <div className="space-y-5 order-1 md:order-2">
           <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">Visite nossa loja</p>
           <h2 id="loja-titulo" className="font-display font-semibold text-3xl md:text-4xl tracking-tight">
-            Loja J&S Store — Joinville/SC
+            Soraia Fernandes — Moda Festa
           </h2>
           <div className="space-y-2 text-sm text-muted-foreground leading-relaxed">
             <p className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-foreground shrink-0" /> {STORE_INFO.street} — {STORE_INFO.city}/{STORE_INFO.region}</p>

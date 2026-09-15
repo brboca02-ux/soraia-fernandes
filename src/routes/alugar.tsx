@@ -36,7 +36,7 @@ const OCASIOES = [
   "Outro evento",
 ];
 
-const TAMANHOS = ["PP", "P", "M", "G", "GG", "XGG"];
+const TAMANHOS = ["36", "38", "40", "42", "44", "46", "48", "50", "52", "54"];
 
 interface FormData {
   nome: string;
