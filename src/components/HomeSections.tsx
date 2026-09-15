@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "@tanstack/react-router";
 import catFeminino from "@/assets/cat-feminino.webp.asset.json";
 import homeBanner from "@/assets/banner-home-soraia.jpeg.asset.json";
