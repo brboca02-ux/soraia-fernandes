@@ -108,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:locale", content: "pt_BR" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@soraifernandes" },
-      { name: "theme-color", content: "#0A0A0A" },
+      { name: "theme-color", content: "#FFFFFF" },
       { name: "format-detection", content: "telephone=no" },
       { property: "og:title", content: "Soraia Fernandes — Moda Festa" },
       { name: "twitter:title", content: "Soraia Fernandes — Moda Festa" },

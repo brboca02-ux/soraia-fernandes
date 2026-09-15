@@ -1,6 +1,6 @@
-import React from "react";
 import { Link } from "@tanstack/react-router";
 import catFeminino from "@/assets/cat-feminino.webp.asset.json";
+import homeBanner from "@/assets/banner-home-soraia.jpeg.asset.json";
 import { useSiteMedia, type SiteMediaKey } from "@/lib/api/siteMedia";
 import { Button } from "@/components/ui/button";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -43,21 +43,7 @@ const diferenciais = [
   { i: MessageCircle, t: "Atendimento humanizado", d: "Consultoras dedicadas" },
 ];
 
-const HERO_SLIDES = [
-  { src: "/hero-3.jpeg", alt: "Vestido de Festa Soraia Fernandes" },
-  { src: "/hero-4.jpeg", alt: "Moda Festa Soraia Fernandes" },
-];
-
 export function HomeHero() {
-  const [current, setCurrent] = React.useState(0);
-
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <section className="relative overflow-hidden">
       <div className="relative w-full px-0">
@@ -65,61 +51,16 @@ export function HomeHero() {
           Vestidos Femininos — Compra e Aluguel — Soraia Fernandes Joinville
         </h1>
 
-        {/* Mantém o banner alto no celular, exibindo a arte completa sem recorte */}
-        <div className="relative w-full overflow-hidden aspect-[2752/1536]">
-          {HERO_SLIDES.map((slide, i) => (
-            <img
-              key={slide.src}
-              src={slide.src}
-              alt={slide.alt}
-              className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-1000 ${
-                i === current ? "opacity-100" : "opacity-0"
-              }`}
-            />
-          ))}
-
-          {/* Overlay só na parte inferior para legibilidade dos botões */}
-          <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 to-transparent" />
-
-          {/* Indicadores */}
-          <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 flex items-center gap-1 z-10">
-            {HERO_SLIDES.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                className="inline-flex h-11 w-11 items-center justify-center"
-                aria-label={`Slide ${i + 1}`}
-              >
-                <span
-                  className={`block h-1 rounded-full transition-all duration-300 ${
-                    i === current ? "w-6 bg-gold" : "w-2 bg-white/50"
-                  }`}
-                />
-              </button>
-            ))}
-          </div>
-
-          <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-6 md:pb-10 z-10">
-            <div className="max-w-2xl w-full px-6 text-center">
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-                <Button
-                  size="xl"
-                  className="bg-gold hover:bg-gold/90 text-primary-foreground rounded-none px-8 lg:px-12 font-semibold shadow-xl h-12 sm:h-12 text-xs tracking-widest uppercase"
-                  asChild
-                >
-                  <Link to="/colecao" search={{ c: "feminino" }}>Comprar Vestidos</Link>
-                </Button>
-                <Button
-                  size="xl"
-                  variant="outline"
-                  className="bg-transparent border-white/60 text-white hover:bg-white hover:text-black rounded-none px-8 lg:px-12 font-semibold shadow-xl h-12 sm:h-12 transition-all text-xs tracking-widest uppercase"
-                  asChild
-                >
-                  <Link to="/alugar">✦ Alugar Vestido</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
+        <div className="relative w-full overflow-hidden bg-background aspect-[29/16]">
+          <img
+            src={homeBanner.url}
+            alt="Soraia Fernandes Moda Festa — moda feminina e vestidos de festa"
+            width={1392}
+            height={768}
+            fetchPriority="high"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-contain"
+          />
         </div>
       </div>
     </section>

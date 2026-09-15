@@ -39,20 +39,20 @@
 
 :root {
   --radius: 0.125rem;
-  --background: oklch(0.145 0 0);                      /* #0A0A0A preto */
-  --foreground: oklch(0.75 0.115 84);                   /* #C9A24C dourado */
+  --background: oklch(1 0 0);                           /* branco */
+  --foreground: oklch(0.145 0 0);                       /* preto */
   --offwhite: oklch(0.968 0.002 90);                    /* #F4F3F1 */
   --onyx: oklch(0.145 0 0);                             /* preto */
-  --card: oklch(0.18 0 0);                              /* fundo escuro */
-  --card-foreground: oklch(0.75 0.115 84);            /* dourado */
-  --popover: oklch(0.18 0 0);
-  --popover-foreground: oklch(0.75 0.115 84);
+  --card: oklch(1 0 0);                                 /* branco */
+  --card-foreground: oklch(0.145 0 0);                  /* preto */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.75 0.115 84);                      /* #C9A24C dourado */
   --primary-foreground: oklch(0.145 0 0);               /* preto */
-  --secondary: oklch(0.25 0 0);                         /* cinza escuro */
-  --secondary-foreground: oklch(0.82 0.005 260);        /* prata */
-  --muted: oklch(0.25 0 0);
-  --muted-foreground: oklch(0.65 0.02 84);              /* dourado suave */
+  --secondary: oklch(0.965 0.003 90);                   /* cinza muito claro */
+  --secondary-foreground: oklch(0.22 0 0);              /* carvão */
+  --muted: oklch(0.965 0.003 90);
+  --muted-foreground: oklch(0.48 0.015 84);             /* cinza quente */
   --accent: oklch(0.75 0.115 84);                       /* dourado */
   --accent-foreground: oklch(0.145 0 0);                 /* preto */
   --gold: oklch(0.75 0.115 84);                         /* #C9A24C */
@@ -61,8 +61,8 @@
   --silver-foreground: oklch(0.145 0 0);               /* preto */
   --destructive: oklch(0.52 0.19 25);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.32 0 0);                             /* cinza quente escuro */
-  --input: oklch(0.25 0 0);
+  --border: oklch(0.88 0.008 84);                       /* cinza quente claro */
+  --input: oklch(0.93 0.005 84);
   --ring: oklch(0.75 0.115 84);                          /* dourado */
 }
 
