@@ -53,7 +53,7 @@ export function HomeHero() {
 
         <div className="relative w-full overflow-hidden bg-background aspect-[29/16]">
           <img
-            src={homeBanner.url}
+            src="/home.jpeg"
             alt="Soraia Fernandes Moda Festa — moda feminina e vestidos de festa"
             width={1392}
             height={768}
