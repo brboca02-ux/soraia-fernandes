@@ -5,7 +5,7 @@ import { STORE_INFO, buildWhatsAppLink } from "@/lib/shopify";
 import { BrandLogo } from "@/components/BrandLogo";
 
 const COL_TITLE = "text-[11px] tracking-[0.3em] uppercase mb-5 text-foreground/60";
-const LINK = "inline-flex items-center min-h-11 py-2 text-sm text-foreground/75 hover:text-background transition";
+const LINK = "inline-flex items-center min-h-11 py-2 text-sm text-foreground/75 hover:text-gold transition";
 
 export function Footer() {
   return (
@@ -78,7 +78,7 @@ export function Footer() {
       </div>
 
       {/* Trust + payments */}
-      <div className="border-t border-background/10">
+      <div className="border-t border-border">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-foreground/70 list-none">
             <li className="inline-flex items-center gap-2"><Lock className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" /> Site Seguro</li>
@@ -93,7 +93,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-background/10 py-6 text-center text-xs text-foreground/55 px-6">
+      <div className="border-t border-border py-6 text-center text-xs text-foreground/55 px-6">
         <p>
           Soraia Fernandes · {STORE_INFO.street}, {STORE_INFO.city}/{STORE_INFO.region} · CEP {STORE_INFO.postalCode}
         </p>
@@ -108,7 +108,7 @@ function PayBadge({ children, label }: { children: React.ReactNode; label?: stri
     <span
       role="img"
       aria-label={label ?? (typeof children === "string" ? `Aceitamos ${children}` : undefined)}
-      className="text-[10px] font-semibold tracking-wider uppercase bg-background/10 border border-background/15 text-foreground/85 px-2.5 py-1 rounded"
+      className="text-[10px] font-semibold tracking-wider uppercase bg-secondary border border-border text-foreground/85 px-2.5 py-1 rounded"
     >
       {children}
     </span>

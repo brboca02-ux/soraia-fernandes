@@ -11,6 +11,7 @@ import {
 } from "@/components/HomeSections";
 import { ShowcaseCarousel } from "@/components/ShowcaseCarousel";
 import { NewsletterSection } from "@/components/NewsletterCapture";
+import homeBanner from "@/assets/banner-home-soraia.jpeg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,11 +24,13 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Soraia Fernandes — Vestidos Femininos: Compra e Aluguel em Joinville/SC" },
       { property: "og:description", content: "Vestidos exclusivos para compra e aluguel. Casamentos, formaturas e eventos especiais em Joinville." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "https://www.jesstorejoinville.com.br/" },
       { property: "og:locale", content: "pt_BR" },
     ],
     links: [
       { rel: "canonical", href: "https://www.jesstorejoinville.com.br/" },
+      { rel: "preload", as: "image", href: homeBanner.url },
     ],
   }),
   component: Index,

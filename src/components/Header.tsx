@@ -115,7 +115,7 @@ export function Header() {
           </span>
         </Link>
         <div className="hidden md:flex flex-1 max-w-md">
-          <SearchBox variant="dark" />
+          <SearchBox />
         </div>
         <div className="flex items-center gap-1 sm:gap-4">
           <a
@@ -139,7 +139,7 @@ export function Header() {
         </div>
       </div>
       {mobileSearch && (
-        <div className="md:hidden px-4 pb-3"><SearchBox variant="dark" autoFocus onNavigate={() => setMobileSearch(false)} /></div>
+        <div className="md:hidden px-4 pb-3"><SearchBox autoFocus onNavigate={() => setMobileSearch(false)} /></div>
       )}
 
       {/* Desktop nav with mega menu */}
@@ -255,7 +255,7 @@ export function Header() {
               </button>
             </div>
             <div className="px-5 py-4 border-b border-gold/20">
-              <SearchBox variant="dark" onNavigate={() => setOpen(false)} />
+              <SearchBox onNavigate={() => setOpen(false)} />
             </div>
             <nav className="flex-1 overflow-y-auto py-2">
               {MENUS.map((m) => {
