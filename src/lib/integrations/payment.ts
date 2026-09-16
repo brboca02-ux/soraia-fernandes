@@ -1,16 +1,15 @@
-// Adapter de pagamento. Implementação ativa: Mercado Pago (Checkout Pro).
-// A criação da preference roda no server (server function), mantendo o
-// MP_ACCESS_TOKEN fora do bundle do client.
+// Adapter de pagamento. Implementação ativa: InfinitePay (checkout por link).
+// O valor é validado no servidor a partir do pedido gravado no banco.
 
-import { createMpPreference } from "./mercadopago.functions";
+import { createInfinitePayCheckout } from "./infinitepay.functions";
 
-export type PaymentMethod = "pix" | "cartao" | "boleto";
+// Mantido por compatibilidade com pedidos antigos gravados no banco.
+export type PaymentMethod = "infinitepay" | "pix" | "cartao" | "boleto";
 
 export interface CreatePaymentInput {
   orderId: string;
   orderNumber: string;
   amount: number;
-  method: PaymentMethod;
   customer: { name: string; email: string; cpf?: string; phone?: string };
 }
 
@@ -18,10 +17,6 @@ export interface CreatePaymentResult {
   provider: string;
   paymentId: string;
   paymentUrl?: string;
-  qrCode?: string;
-  qrCodeBase64?: string;
-  pixCopyPaste?: string;
-  boletoUrl?: string;
 }
 
 export interface PaymentProvider {
@@ -36,25 +31,21 @@ function currentSiteUrl(): string {
   return "https://www.soraiafernandes.com.br";
 }
 
-export const MercadoPagoProvider: PaymentProvider = {
-  name: "mercadopago",
+export const InfinitePayProvider: PaymentProvider = {
+  name: "infinitepay",
   async createPayment(input) {
-    const result = await createMpPreference({
+    return await createInfinitePayCheckout({
       data: {
-        orderId: input.orderId,
         orderNumber: input.orderNumber,
-        amount: input.amount,
-        method: input.method,
         siteUrl: currentSiteUrl(),
-        customer: input.customer,
+        customer: {
+          name: input.customer.name,
+          email: input.customer.email,
+          phone: input.customer.phone,
+        },
       },
     });
-    return {
-      provider: result.provider,
-      paymentId: result.paymentId,
-      paymentUrl: result.paymentUrl,
-    };
   },
 };
 
-export const payment: PaymentProvider = MercadoPagoProvider;
+export const payment: PaymentProvider = InfinitePayProvider;
