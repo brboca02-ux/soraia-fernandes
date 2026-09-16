@@ -89,6 +89,6 @@ function SobrePage() {
         </div>
       </section>
     </div>
-  );
-}
+  ;
+
 
