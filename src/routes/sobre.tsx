@@ -1,4 +1,3 @@
-﻿<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>tsx
 import { createFileRoute } from "@tanstack/react-router";
 import { MapPin, MessageCircle, Clock, Heart } from "lucide-react";
 import { STORE_INFO, buildWhatsAppLink } from "@/lib/shopify";
@@ -117,4 +116,4 @@ function SobrePage() {
   );
 }
 
-export default SobrePage;</body></html>
+export default SobrePage;
