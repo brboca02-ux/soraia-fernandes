@@ -326,7 +326,7 @@ function CheckoutPage() {
           quantity: i.quantity,
   };
 }),
-        })),
+
         subtotal: +subtotal.toFixed(2),
         shipping_cost: +shippingCost.toFixed(2),
         shipping_method: selectedQuote?.name ?? "",
