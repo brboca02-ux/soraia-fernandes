@@ -239,7 +239,7 @@ export function RecebidosHomeSection() {
   return (
     <section className="section-compact bg-background">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
-        <SectionHeader kicker="Esta semana" title="Lançamento do site, Oportunidade UNICA, Apenas para os Primeiros Pedidos" link={{ to: "/colecao", label: "Ver lançamentos", c: "recebidos-da-semana" }} />
+        <SectionHeader kicker="Oportunidade UNICA de Lançamento" title="Apenas para os Primeiros Pedidos" link={{ to: "/colecao", label: "Ver lançamentos", c: "recebidos-da-semana" }} />
         <ProductGrid sortKey="CREATED_AT" reverse first={5} columns={{ mobile: 2, tablet: 3, desktop: 5 }} />
       </div>
     </section>
