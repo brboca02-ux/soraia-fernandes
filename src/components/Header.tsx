@@ -167,7 +167,7 @@ export function Header() {
             </button>
           ))}
           <Link to="/colecao" search={{ c: "recebidos-da-semana" } as never} className="tap-target px-2 text-foreground/80 hover:text-gold transition">
-            Recebidos da Semana
+            Lançamento do site, Oportunidade UNICA, Apenas para os Primeiros Pedidos
           </Link>
           <Link
             to="/alugar"
@@ -321,7 +321,7 @@ export function Header() {
                 onClick={() => setOpen(false)}
                 className="block px-5 py-3 text-base font-semibold border-b border-gold/20 text-foreground hover:text-gold transition"
               >
-                Recebidos da Semana
+                Lançamento do site, Oportunidade UNICA, Apenas para os Primeiros Pedidos
               </Link>
               <Link
                 to="/alugar"

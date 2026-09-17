@@ -51,13 +51,13 @@ export const CATEGORY_SEO: Record<string, CategorySeo> = {
   "recebidos-da-semana": {
     id: "recebidos-da-semana",
     name: "Recebidos da Semana",
-    title: "Recebidos da Semana â€” Novidades Soraia Fernandes",
+    title: "Lançamento do site, Oportunidade UNICA, Apenas para os Primeiros Pedidos” Novidades Soraia Fernandes",
     description:
-      "Confira os recebidos da semana na Soraia Fernandes: novidades de vestidos femininos que acabaram de chegar.",
+      "Confira o Lançamento do site, Oportunidade UNICA, Apenas para os Primeiros Pedidos na Soraia Fernandes: novidades de vestidos femininos que acabaram de chegar.",
     h1: "Recebidos da Semana",
     eyebrow: "Acabou de chegar",
     intro: "",
-    keywords: ["novidades moda", "recebidos da semana", "roupas novas", "lanÃ§amentos de moda"],
+    keywords: ["novidades moda", "recebidos da semana", "roupas novas", "lançamentos de moda"],
   },
 };
 
