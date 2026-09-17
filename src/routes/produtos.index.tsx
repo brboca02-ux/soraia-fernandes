@@ -148,7 +148,8 @@ function ProductsListPage() {
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1">
                         <button onClick={() => navigate({ to: "/produtos/$id/editar", params: { id: p.id } })}
-                          className="rounded p-1.5 hover:bg-muted" title="Editar"><Pencil className="h-4 w-4" /></button>
+                          className="inline-flex items-center gap-1.5 rounded-md bg-foreground text-background px-3 py-1 text-xs font-semibold hover:bg-foreground/80 transition-colors"
+                          title="Editar este produto"> <Pencil className="h-3.5 w-3.5" /></button>
                         <button onClick={() => { duplicate(p.id); toast.success("Produto duplicado"); }}
                           className="rounded p-1.5 hover:bg-muted" title="Duplicar"><Copy className="h-4 w-4" /></button>
                         {p.status === "arquivado" ? (
