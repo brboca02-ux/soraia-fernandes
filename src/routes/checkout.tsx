@@ -31,7 +31,6 @@ const checkoutSchema = z.object({
   stateUf: z.string().trim().length(2, "UF deve ter 2 letras").toUpperCase(),
   shippingCode: z.string().min(1, "Selecione uma opção de frete"),
 });
-
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
