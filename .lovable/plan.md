@@ -1,8 +1,6 @@
 # Concluir integração InfinitePay (handle soraia-cristina-4n6)
 
-A base já existe: o servidor monta o link de pagamento da InfinitePay com o valor real do pedido e confirma o pagamento via verificação pública. Falta terminar a experiência do cliente no checkout e na página de sucesso. O código de referência que você colou chegou corrompido (misturado com HTML), então vou aplicar as mudanças diretamente nos arquivos do projeto.
 
-## O que será feito
 
 ### 1. Checkout — etapa de pagamento simplificada (segue seu código)
 - Remover a escolha manual Pix / Cartão / Boleto: a InfinitePay oferece essas opções na própria tela dela.
