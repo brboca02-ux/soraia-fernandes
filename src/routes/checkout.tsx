@@ -1,4 +1,4 @@
-
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>tsx
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -31,6 +31,7 @@ const checkoutSchema = z.object({
   stateUf: z.string().trim().length(2, "UF deve ter 2 letras").toUpperCase(),
   shippingCode: z.string().min(1, "Selecione uma opção de frete"),
 });
+
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
@@ -66,13 +67,11 @@ function CheckoutPage() {
   const items = useCartStore((s) => s.items);
   const clearCart = useCartStore((s) => s.clearCart);
 
-  // Identificação
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [cpf, setCpf] = useState("");
 
-  // Endereço
   const [cep, setCep] = useState("");
   const [street, setStreet] = useState("");
   const [number, setNumber] = useState("");
@@ -82,7 +81,6 @@ function CheckoutPage() {
   const [stateUf, setStateUf] = useState("");
   const [cepLoading, setCepLoading] = useState(false);
 
-  // Frete e Cupom
   const [quotes, setQuotes] = useState<ShippingQuote[]>([]);
   const [quotesLoading, setQuotesLoading] = useState(false);
   const [shippingCode, setShippingCode] = useState<string>("");
@@ -115,7 +113,7 @@ function CheckoutPage() {
 
   const subtotal = useMemo(
     () => items.reduce((s, i) => s + parseFloat(i.price.amount) * i.quantity, 0),
-    [items],
+    [items]
   );
   const itemsCount = items.reduce((s, i) => s + i.quantity, 0);
   const selectedQuote = quotes.find((q) => q.code === shippingCode);
@@ -123,14 +121,12 @@ function CheckoutPage() {
   const discount = appliedCoupon ? calculateDiscount(subtotal, appliedCoupon) : 0;
   const total = subtotal + shippingCost - discount;
 
-  // Pré-preenche usuário logado
   useEffect(() => {
     if (user?.email && !email) setEmail(user.email);
     const meta = (user?.user_metadata ?? {}) as { full_name?: string; name?: string };
     if ((meta.full_name || meta.name) && !name) setName(meta.full_name || meta.name || "");
   }, [user]);
 
-  // Hidrata rascunho salvo
   useEffect(() => {
     try {
       const raw = typeof window !== "undefined" ? localStorage.getItem(DRAFT_KEY) : null;
@@ -150,14 +146,13 @@ function CheckoutPage() {
     } catch {}
   }, []);
 
-  // Persiste rascunho e sincroniza carrinho abandonado
   useEffect(() => {
     if (typeof window === "undefined") return;
     const t = window.setTimeout(() => {
       try {
         localStorage.setItem(
           DRAFT_KEY,
-          JSON.stringify({ name, email, phone, cpf, cep, street, number, complement, district, city, stateUf }),
+          JSON.stringify({ name, email, phone, cpf, cep, street, number, complement, district, city, stateUf })
         );
       } catch {}
 
@@ -177,7 +172,6 @@ function CheckoutPage() {
     return () => window.clearTimeout(t);
   }, [name, email, phone, cpf, cep, street, number, complement, district, city, stateUf, items, subtotal, shippingCost, discount, total]);
 
-  // Busca CEP automático
   useEffect(() => {
     const c = onlyDigits(cep);
     if (c.length !== 8) return;
@@ -187,20 +181,29 @@ function CheckoutPage() {
       const data = await lookupCep(c);
       if (cancelled) return;
       setCepLoading(false);
-      if (!data) { toast.error("CEP não encontrado. Verifique e tente novamente."); return; }
+      if (!data) {
+        toast.error("CEP não encontrado. Verifique e tente novamente.");
+        return;
+      }
       setStreet((prev) => data.logradouro || prev);
       setDistrict((prev) => data.bairro || prev);
       setCity(data.localidade || "");
       setStateUf(data.uf || "");
       toast.success("Endereço encontrado — calculando frete…");
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [cep]);
 
-  // Cotação de frete
   useEffect(() => {
     const c = onlyDigits(cep);
-    if (c.length !== 8) { setQuotes([]); setShippingCode(""); setQuotesLoading(false); return; }
+    if (c.length !== 8) {
+      setQuotes([]);
+      setShippingCode("");
+      setQuotesLoading(false);
+      return;
+    }
     let cancelled = false;
     setQuotesLoading(true);
     (async () => {
@@ -210,7 +213,9 @@ function CheckoutPage() {
       setQuotes(q);
       if (q.length && !q.find((x) => x.code === shippingCode)) setShippingCode(q[0].code);
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [cep, city, stateUf, subtotal, itemsCount]);
 
   const onCepBlur = async () => {
@@ -219,7 +224,10 @@ function CheckoutPage() {
     setCepLoading(true);
     const data = await lookupCep(c);
     setCepLoading(false);
-    if (!data) { toast.error("CEP não encontrado"); return; }
+    if (!data) {
+      toast.error("CEP não encontrado");
+      return;
+    }
     setStreet(data.logradouro || street);
     setDistrict(data.bairro || district);
     setCity(data.localidade || city);
@@ -231,8 +239,13 @@ function CheckoutPage() {
     name.trim().length >= 2 &&
     /.+@.+\..+/.test(email) &&
     onlyDigits(cep).length === 8 &&
-    street && number && district && city && stateUf &&
-    shippingCode && !submitting;
+    street &&
+    number &&
+    district &&
+    city &&
+    stateUf &&
+    shippingCode &&
+    !submitting;
 
   const handleSubmit = async () => {
     if (!canSubmit) {
@@ -240,9 +253,18 @@ function CheckoutPage() {
       return;
     }
     const parsed = checkoutSchema.safeParse({
-      name, email, phone, cpf,
-      cep: onlyDigits(cep), street, number, complement,
-      district, city, stateUf, shippingCode,
+      name,
+      email,
+      phone,
+      cpf,
+      cep: onlyDigits(cep),
+      street,
+      number,
+      complement,
+      district,
+      city,
+      stateUf,
+      shippingCode,
     });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? "Dados inválidos");
@@ -263,35 +285,26 @@ function CheckoutPage() {
         },
         address: {
           cep: v.cep,
-          street: v.street, number: v.number, complement: v.complement || undefined,
-          district: v.district, city: v.city, state: v.stateUf,
+          street: v.street,
+          number: v.number,
+          complement: v.complement || undefined,
+          district: v.district,
+          city: v.city,
+          state: v.stateUf,
         },
         items: items.map((i) => {
-          const rawId = (i as any).productId || (i as any).product_id || i.product?.node?.id || i.variantId || "";
-<<<<<<< HEAD
-          // Limpa prefixo de URL da Shopify e remove o prefixo "mock:"
-          const cleanId = (typeof rawId === "string" ? rawId.split("/").pop() || "" : String(rawId))
-        .replace(/^mock:/, "");
+          let rawId = (i as any).productId || (i as any).product_id || i.product?.node?.id || i.variantId || "";
+          let cleanId = typeof rawId === "string" ? rawId.split("/").pop() || "" : String(rawId);
+          cleanId = cleanId.replace(/^mock:/, "");
 
-        return {
-        product_id: cleanId || null,
-        product_name: i.product?.node?.title || "Produto",
-        variant_size: i.selectedOptions?.find((o) => /tam|size/i.test(o.name))?.value || null,
-        variant_color: i.selectedOptions?.find((o) => /cor|color/i.test(o.name))?.value || null,
-        unit_price: parseFloat(i.price?.amount || "0"),
-        quantity: i.quantity,
-      };
-=======
-          const cleanId = typeof rawId === "string" && rawId.includes("/") ? rawId.split("/").pop() : rawId;
           return {
             product_id: cleanId || null,
             product_name: i.product?.node?.title || "Produto",
-            variant_size: i.selectedOptions?.find((o) => /tam|size/i.test(o.name))?.value || undefined,
-            variant_color: i.selectedOptions?.find((o) => /cor|color/i.test(o.name))?.value || undefined,
+            variant_size: i.selectedOptions?.find((o) => /tam|size/i.test(o.name))?.value || null,
+            variant_color: i.selectedOptions?.find((o) => /cor|color/i.test(o.name))?.value || null,
             unit_price: parseFloat(i.price?.amount || "0"),
             quantity: i.quantity,
           };
->>>>>>> 203cf91d8e8fd43ee3adf98ff4d6464d2afddd6a
         }),
         subtotal: +subtotal.toFixed(2),
         shipping_cost: +shippingCost.toFixed(2),
@@ -331,7 +344,9 @@ function CheckoutPage() {
 
       setSubmitStage("redirecting");
       clearCart();
-      try { localStorage.removeItem(DRAFT_KEY); } catch {}
+      try {
+        localStorage.removeItem(DRAFT_KEY);
+      } catch {}
       toast.success("Pedido criado!", { description: order.order_number });
 
       if (paymentUrl) {
@@ -349,10 +364,13 @@ function CheckoutPage() {
   };
 
   const stageMessage =
-    submitStage === "creating" ? "Criando seu pedido…"
-    : submitStage === "processing" ? "Gerando link de pagamento InfinitePay…"
-    : submitStage === "redirecting" ? "Redirecionando para pagamento seguro…"
-    : "";
+    submitStage === "creating"
+      ? "Criando seu pedido…"
+      : submitStage === "processing"
+      ? "Gerando link de pagamento InfinitePay…"
+      : submitStage === "redirecting"
+      ? "Redirecionando para pagamento seguro…"
+      : "";
 
   const stepIdentDone = name.trim().length >= 2 && /.+@.+\..+/.test(email);
   const stepAddrDone = onlyDigits(cep).length === 8 && !!street && !!number && !!district && !!city && !!stateUf;
@@ -486,7 +504,12 @@ function CheckoutPage() {
               ) : (
                 <div className="space-y-2">
                   {quotes.map((q) => (
-                    <label key={q.code} className={`flex items-center justify-between border rounded-md p-3 cursor-pointer transition ${shippingCode === q.code ? "border-primary bg-primary/5" : "border-border hover:border-foreground/40"}`}>
+                    <label
+                      key={q.code}
+                      className={`flex items-center justify-between border rounded-md p-3 cursor-pointer transition ${
+                        shippingCode === q.code ? "border-primary bg-primary/5" : "border-border hover:border-foreground/40"
+                      }`}
+                    >
                       <div className="flex items-center gap-3">
                         <input type="radio" name="ship" checked={shippingCode === q.code} onChange={() => setShippingCode(q.code)} />
                         <div>
@@ -551,7 +574,9 @@ function CheckoutPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="line-clamp-2">{i.product.node.title}</p>
-                      <p className="text-xs text-muted-foreground">{i.quantity}× · {i.selectedOptions.map((o) => o.value).join(" · ")}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {i.quantity}× · {i.selectedOptions.map((o) => o.value).join(" · ")}
+                      </p>
                     </div>
                     <span className="text-sm font-medium">{formatPrice(parseFloat(i.price.amount) * i.quantity, "BRL")}</span>
                   </div>
@@ -565,22 +590,18 @@ function CheckoutPage() {
                     selectedQuote?.code === "cotacao"
                       ? "A consultar"
                       : shippingCost === 0
-                        ? "Grátis"
-                        : formatPrice(shippingCost, "BRL")
+                      ? "Grátis"
+                      : formatPrice(shippingCost, "BRL")
                   }
                   muted={!shippingCode}
                 />
                 {selectedQuote && selectedQuote.code !== "cotacao" && (
-                  <Row
-                    label="Previsão de entrega"
-                    value={estimatedDeliveryLabel(selectedQuote.days)}
-                    muted
-                  />
+                  <Row label="Previsão de entrega" value={estimatedDeliveryLabel(selectedQuote.days)} muted />
                 )}
                 {appliedCoupon && (
-                  <Row 
-                    label={`Cupom (${appliedCoupon.code})`} 
-                    value={`-${formatPrice(discount, "BRL")}`} 
+                  <Row
+                    label={`Cupom (${appliedCoupon.code})`}
+                    value={`-${formatPrice(discount, "BRL")}`}
                     className="text-emerald-500 font-medium"
                   />
                 )}
@@ -626,7 +647,9 @@ function CheckoutPage() {
                     <span className="tracking-normal normal-case text-xs">{stageMessage}</span>
                   </>
                 ) : (
-                  <>Finalizar pedido <ChevronRight className="h-4 w-4" /></>
+                  <>
+                    Finalizar pedido <ChevronRight className="h-4 w-4" />
+                  </>
                 )}
               </button>
               {submitting && (
@@ -645,61 +668,9 @@ function CheckoutPage() {
   );
 }
 
-const inp =
-  "w-full h-10 px-3 rounded border border-border bg-background text-sm outline-none focus:ring-1 focus:ring-primary";
+const inp = "w-full h-10 px-3 rounded-md border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30";
 
-function Section({
-  icon,
-  title,
-  children,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  children: React.ReactNode;
-}) {
+function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
   return (
-    <section className="border border-border rounded-md p-5">
-      <h2 className="flex items-center gap-2 font-display text-lg mb-4">
-        <span className="text-primary">{icon}</span>
-        {title}
-      </h2>
-      {children}
-    </section>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="block text-[11px] uppercase tracking-wide text-muted-foreground mb-1">
-        {label}
-      </span>
-      {children}
-    </label>
-  );
-}
-
-function Row({
-  label,
-  value,
-  bold,
-  muted,
-  className,
-}: {
-  label: string;
-  value: string;
-  bold?: boolean;
-  muted?: boolean;
-  className?: string;
-}) {
-  return (
-    <div
-      className={`flex items-center justify-between ${bold ? "text-base font-semibold" : ""} ${
-        muted ? "text-muted-foreground" : ""
-      } ${className ?? ""}`}
-    >
-      <span>{label}</span>
-      <span>{value}</span>
-    </div>
-  );
-}
+    <section className="border border-border rounded-md p-5 bg-background">
+      <h2 className="font-display text-lg mb-4 flex items-</body></html>
