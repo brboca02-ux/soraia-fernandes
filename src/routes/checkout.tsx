@@ -2,23 +2,18 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Loader2, MapPin, CreditCard, User, ChevronRight, Truck, Check, ShieldCheck } from "lucide-react";
+import { Loader2, MapPin, CreditCard, User, ChevronRight, Truck, Check, Lock, Ticket, X as CloseIcon } from "lucide-react";
 import { z } from "zod";
 import { useCartStore } from "@/stores/cartStore";
 import { useAuth } from "@/hooks/useAuth";
 import { formatPrice } from "@/lib/shopify";
 import { shipping, type ShippingQuote } from "@/lib/integrations/shipping";
-import { payment } from "@/lib/integrations/payment"; // Este é o seu gateway de pagamento (InfinitePay)
+import { payment } from "@/lib/integrations/payment";
 import { lookupCep, formatCep } from "@/lib/integrations/viacep";
 import { createOrder } from "@/lib/api/supaOrders";
 import { supabase } from "@/integrations/supabase/client";
 import { validateCoupon, calculateDiscount, type Coupon } from "@/lib/coupons";
-import { Ticket, X as CloseIcon } from "lucide-react";
 import { upsertAbandonedCart } from "@/lib/api/abandoned";
-
-// --- Definições de tipo para PaymentMethod (adicionado) ---
-type PaymentMethod = "pix" | "cartao" | "boleto";
-// --- Fim das definições de tipo ---
 
 const DRAFT_KEY = "md_checkout_draft_v1";
 
@@ -49,7 +44,6 @@ export const Route = createFileRoute("/checkout")({
 
 const onlyDigits = (s: string) => s.replace(/\D/g, "");
 
-// Soma "days" dias úteis a partir de hoje, pulando sábado/domingo.
 function addBusinessDays(days: number): Date {
   const d = new Date();
   let added = 0;
@@ -73,13 +67,13 @@ function CheckoutPage() {
   const items = useCartStore((s) => s.items);
   const clearCart = useCartStore((s) => s.clearCart);
 
-  // identificação
+  // Identificação
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [cpf, setCpf] = useState("");
 
-  // endereço
+  // Endereço
   const [cep, setCep] = useState("");
   const [street, setStreet] = useState("");
   const [number, setNumber] = useState("");
@@ -89,7 +83,7 @@ function CheckoutPage() {
   const [stateUf, setStateUf] = useState("");
   const [cepLoading, setCepLoading] = useState(false);
 
-  // frete e pagamento
+  // Frete e Cupom
   const [quotes, setQuotes] = useState<ShippingQuote[]>([]);
   const [quotesLoading, setQuotesLoading] = useState(false);
   const [shippingCode, setShippingCode] = useState<string>("");
@@ -98,8 +92,6 @@ function CheckoutPage() {
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [validatingCoupon, setValidatingCoupon] = useState(false);
-  // Removido: pollRef (não é mais necessário sem polling de PIX local)
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pix"); // Adicionado estado para o método de pagamento
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -132,14 +124,14 @@ function CheckoutPage() {
   const discount = appliedCoupon ? calculateDiscount(subtotal, appliedCoupon) : 0;
   const total = subtotal + shippingCost - discount;
 
-  // pré-preenche email/nome do usuário logado
+  // Pré-preenche usuário logado
   useEffect(() => {
     if (user?.email && !email) setEmail(user.email);
     const meta = (user?.user_metadata ?? {}) as { full_name?: string; name?: string };
     if ((meta.full_name || meta.name) && !name) setName(meta.full_name || meta.name || "");
-  }, [user]); // eslint-disable-line
+  }, [user]);
 
-  // hidrata rascunho salvo (uma vez)
+  // Hidrata rascunho salvo
   useEffect(() => {
     try {
       const raw = typeof window !== "undefined" ? localStorage.getItem(DRAFT_KEY) : null;
@@ -156,12 +148,10 @@ function CheckoutPage() {
       if (d.district) setDistrict((v) => v || d.district!);
       if (d.city) setCity((v) => v || d.city!);
       if (d.stateUf) setStateUf((v) => v || d.stateUf!);
-    } catch {
-      // ignora rascunho corrompido
-    }
-  }, []); // eslint-disable-line
+    } catch {}
+  }, []);
 
-  // persiste rascunho a cada mudança (debounced simples)
+  // Persiste rascunho e sincroniza carrinho abandonado
   useEffect(() => {
     if (typeof window === "undefined") return;
     const t = window.setTimeout(() => {
@@ -170,11 +160,8 @@ function CheckoutPage() {
           DRAFT_KEY,
           JSON.stringify({ name, email, phone, cpf, cep, street, number, complement, district, city, stateUf }),
         );
-      } catch {
-        // quota / privacidade: silencia
-      }
+      } catch {}
 
-      // Sync abandoned cart
       if (email || phone) {
         void upsertAbandonedCart({
           customer_name: name || null,
@@ -191,7 +178,7 @@ function CheckoutPage() {
     return () => window.clearTimeout(t);
   }, [name, email, phone, cpf, cep, street, number, complement, district, city, stateUf, items, subtotal, shippingCost, discount, total]);
 
-  // auto-preenche endereço assim que o CEP fica completo (8 dígitos)
+  // Busca CEP automático
   useEffect(() => {
     const c = onlyDigits(cep);
     if (c.length !== 8) return;
@@ -211,7 +198,7 @@ function CheckoutPage() {
     return () => { cancelled = true; };
   }, [cep]);
 
-  // cotação de frete sempre que CEP/cidade/subtotal mudam
+  // Cotação de frete
   useEffect(() => {
     const c = onlyDigits(cep);
     if (c.length !== 8) { setQuotes([]); setShippingCode(""); setQuotesLoading(false); return; }
@@ -225,10 +212,9 @@ function CheckoutPage() {
       if (q.length && !q.find((x) => x.code === shippingCode)) setShippingCode(q[0].code);
     })();
     return () => { cancelled = true; };
-  }, [cep, city, stateUf, subtotal, itemsCount]); // eslint-disable-line
+  }, [cep, city, stateUf, subtotal, itemsCount]);
 
   const onCepBlur = async () => {
-    // fallback caso o efeito não tenha rodado (ex.: colar sem disparar change)
     const c = onlyDigits(cep);
     if (c.length !== 8 || street) return;
     setCepLoading(true);
@@ -240,8 +226,6 @@ function CheckoutPage() {
     setCity(data.localidade || city);
     setStateUf(data.uf || stateUf);
   };
-
-  // Removido: useEffect para polling do PIX, pois o fluxo de pagamento agora é via redirecionamento.
 
   const canSubmit =
     items.length > 0 &&
@@ -268,6 +252,7 @@ function CheckoutPage() {
     const v = parsed.data;
     setSubmitting(true);
     setSubmitStage("creating");
+
     try {
       const order = await createOrder({
         customer: {
@@ -282,7 +267,6 @@ function CheckoutPage() {
           street: v.street, number: v.number, complement: v.complement || undefined,
           district: v.district, city: v.city, state: v.stateUf,
         },
-        // --- INÍCIO DA CORREÇÃO product_id ---
         items: items.map((i) => {
           const rawId = (i as any).productId || (i as any).product_id || i.product?.node?.id || i.variantId || "";
           const cleanId = typeof rawId === "string" && rawId.includes("/") ? rawId.split("/").pop() : rawId;
@@ -295,17 +279,15 @@ function CheckoutPage() {
             quantity: i.quantity,
           };
         }),
-        // --- FIM DA CORREÇÃO product_id ---
         subtotal: +subtotal.toFixed(2),
         shipping_cost: +shippingCost.toFixed(2),
         shipping_method: selectedQuote?.name ?? "",
         discount: +discount.toFixed(2),
         total: +total.toFixed(2),
-        payment_method: paymentMethod,
+        payment_method: "infinitepay",
         coupon_code: appliedCoupon?.code,
       });
 
-      // --- INÍCIO DA NOVA LÓGICA DE PAGAMENTO (UNIFICADA) ---
       setSubmitStage("processing");
 
       let paymentUrl: string | undefined;
@@ -314,9 +296,12 @@ function CheckoutPage() {
           orderId: order.id,
           orderNumber: order.order_number,
           amount: order.total,
-          method: paymentMethod,
-          customer: { name: v.name, email: v.email, cpf: onlyDigits(v.cpf ?? "") || undefined, phone: onlyDigits(v.phone ?? "") || undefined },
-          siteUrl: window.location.origin, // Adicionado siteUrl para o gateway
+          customer: {
+            name: v.name,
+            email: v.email,
+            cpf: onlyDigits(v.cpf ?? "") || undefined,
+            phone: onlyDigits(v.phone ?? "") || undefined,
+          },
         });
         paymentUrl = pay.paymentUrl;
 
@@ -327,15 +312,12 @@ function CheckoutPage() {
           p_payment_url: pay.paymentUrl ?? undefined,
         });
       } catch (e: any) {
-        console.warn("Pagamento não pôde ser criado:", e);
-        toast.warning("Pedido criado, mas o pagamento não pôde ser iniciado agora.", {
-          description: e.message || "Você poderá pagar pela página do pedido.",
-        });
+        console.warn("Pagamento não pôde ser iniciado:", e);
       }
 
       setSubmitStage("redirecting");
       clearCart();
-      try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+      try { localStorage.removeItem(DRAFT_KEY); } catch {}
       toast.success("Pedido criado!", { description: order.order_number });
 
       if (paymentUrl) {
@@ -343,8 +325,6 @@ function CheckoutPage() {
         return;
       }
       navigate({ to: "/pedido/sucesso/$numero", params: { numero: order.order_number }, search: { email: v.email } });
-      // --- FIM DA NOVA LÓGICA DE PAGAMENTO (UNIFICADA) ---
-
     } catch (e) {
       console.error(e);
       toast.error("Não foi possível finalizar o pedido", { description: (e as Error).message });
@@ -354,18 +334,15 @@ function CheckoutPage() {
     }
   };
 
-
   const stageMessage =
     submitStage === "creating" ? "Criando seu pedido…"
-    : submitStage === "processing" ? "Processando pagamento…"
-    : submitStage === "redirecting" ? "Tudo pronto! Redirecionando…"
+    : submitStage === "processing" ? "Gerando link de pagamento InfinitePay…"
+    : submitStage === "redirecting" ? "Redirecionando para pagamento seguro…"
     : "";
 
-  // progresso baseado no preenchimento
   const stepIdentDone = name.trim().length >= 2 && /.+@.+\..+/.test(email);
   const stepAddrDone = onlyDigits(cep).length === 8 && !!street && !!number && !!district && !!city && !!stateUf;
   const stepShipDone = !!shippingCode;
-  const stepPayDone = stepShipDone; // sempre há um método selecionado
 
   if (items.length === 0) {
     return (
@@ -387,16 +364,12 @@ function CheckoutPage() {
         <h1 className="font-display text-3xl md:text-4xl tracking-tight">Finalizar Compra</h1>
         <p className="text-sm text-muted-foreground mt-1">Preencha seus dados para concluir o pedido.</p>
 
-        {/* Progresso do checkout */}
-        <ol
-          aria-label="Etapas do checkout"
-          className="mt-6 grid grid-cols-4 gap-2 sm:gap-3"
-        >
+        <ol aria-label="Etapas do checkout" className="mt-6 grid grid-cols-4 gap-2 sm:gap-3">
           {[
             { label: "Identificação", done: stepIdentDone },
             { label: "Endereço", done: stepAddrDone },
             { label: "Frete", done: stepShipDone },
-            { label: "Pagamento", done: stepPayDone },
+            { label: "Pagamento", done: true },
           ].map((s, i) => (
             <li key={s.label} className="flex items-center gap-2 min-w-0">
               <span
@@ -523,24 +496,30 @@ function CheckoutPage() {
               )}
             </Section>
 
-            {/* Pagamento */}
-            <Section icon={<CreditCard className="h-4 w-4" />} title="Pagamento">
-              <div className="grid sm:grid-cols-3 gap-2">
-                {(["pix", "cartao", "boleto"] as PaymentMethod[]).map((m) => (
-                  <label key={m} className={`border rounded-md p-3 cursor-pointer text-sm font-medium text-center transition ${paymentMethod === m ? "border-primary bg-primary/5" : "border-border hover:border-foreground/40"}`}>
-                    <input type="radio" name="pm" className="hidden" checked={paymentMethod === m} onChange={() => setPaymentMethod(m)} />
-                    {m === "pix" ? "Pix" : m === "cartao" ? "Cartão de crédito" : "Boleto"}
-                  </label>
-                ))}
+            {/* Pagamento Seguro InfinitePay */}
+            <Section icon={<CreditCard className="h-4 w-4" />} title="Pagamento seguro">
+              <div className="border border-primary/40 bg-primary/[0.03] rounded-lg p-4 sm:p-5">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-sm">Pague com InfinitePay</span>
+                    <span className="text-[10px] uppercase font-bold bg-emerald-500/15 text-emerald-600 px-2 py-0.5 rounded">Oficial</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Lock className="h-3.5 w-3.5" /> Ambiente Seguro
+                  </div>
+                </div>
+
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  Ao clicar em <strong>Finalizar pedido</strong>, você será redirecionado para a tela oficial da InfinitePay, onde poderá escolher pagar via <strong>Pix</strong> (aprovação instantânea) ou <strong>Cartão de Crédito em até 12x</strong>.
+                </p>
+
+                <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-border/60">
+                  <span className="text-[11px] text-muted-foreground font-medium">Aceita:</span>
+                  <span className="text-[11px] bg-secondary px-2.5 py-1 rounded font-medium">⚡ Pix</span>
+                  <span className="text-[11px] bg-secondary px-2.5 py-1 rounded font-medium">💳 Cartão de Crédito (até 12x)</span>
+                  <span className="text-[11px] bg-secondary px-2.5 py-1 rounded font-medium">🔒 InfinitePay Checkout</span>
+                </div>
               </div>
-              <p className="mt-3 text-xs text-muted-foreground">
-                Pagamento processado com segurança pelo seu gateway configurado.{" "}
-                {paymentMethod === "pix"
-                  ? "Você será redirecionado para concluir o pagamento via PIX."
-                  : paymentMethod === "cartao"
-                    ? "Você será redirecionado para preencher os dados do cartão."
-                    : "Você será redirecionado para concluir o pagamento do boleto."}
-              </p>
             </Section>
           </div>
 
@@ -648,42 +627,8 @@ function CheckoutPage() {
           </aside>
         </fieldset>
       </div>
-
-      {/* Removido: Modal de PIX (com pix &&) */}
-      {/* Removido: Modal de Cartão (com card &&) */}
-
     </div>
   );
 }
 
-const inp = "w-full h-10 px-3 rounded-md border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30";
-
-function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
-  return (
-    <section className="border border-border rounded-md p-5 bg-background">
-      <h2 className="font-display text-lg mb-4 flex items-center gap-2">
-        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">{icon}</span>
-        {title}
-      </h2>
-      {children}
-    </section>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="block text-xs font-medium text-muted-foreground mb-1">{label}</span>
-      {children}
-    </label>
-  );
-}
-
-function Row({ label, value, bold, muted, className }: { label: string; value: string; bold?: boolean; muted?: boolean; className?: string }) {
-  return (
-    <div className={`flex justify-between ${bold ? "text-base font-semibold pt-2 border-t border-border" : ""} ${muted ? "text-muted-foreground" : ""} ${className || ""}`}>
-      <span>{label}</span>
-      <span>{value}</span>
-    </div>
-  );
-}</body></html>
+const inp</body></html>
