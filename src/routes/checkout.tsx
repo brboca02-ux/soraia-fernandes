@@ -272,8 +272,8 @@ function CheckoutPage() {
           return {
             product_id: cleanId || null,
             product_name: i.product?.node?.title || "Produto",
-            variant_size: i.selectedOptions?.find((o) => /tam|size/i.test(o.name))?.value || null,
-            variant_color: i.selectedOptions?.find((o) => /cor|color/i.test(o.name))?.value || null,
+            variant_size: i.selectedOptions?.find((o) => /tam|size/i.test(o.name))?.value || undefined,
+            variant_color: i.selectedOptions?.find((o) => /cor|color/i.test(o.name))?.value || undefined,
             unit_price: parseFloat(i.price?.amount || "0"),
             quantity: i.quantity,
           };
