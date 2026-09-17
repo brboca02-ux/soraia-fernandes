@@ -326,10 +326,10 @@ function CheckoutPage() {
           p_payment_id: pay.paymentId,
           p_payment_url: pay.paymentUrl ?? undefined,
         });
-      } catch (e: any) {
+      } catch (e) {
         console.warn("Pagamento não pôde ser criado:", e);
         toast.warning("Pedido criado, mas o pagamento não pôde ser iniciado agora.", {
-          description: e.message || "Você poderá pagar pela página do pedido.",
+          description: (e as Error).message || "Você poderá pagar pela página do pedido.",
         });
       }
 
