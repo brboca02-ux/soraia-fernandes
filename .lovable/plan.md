@@ -1,4 +1,3 @@
-# Concluir integração InfinitePay (handle soraia-cristina-4n6)
 
 
 
