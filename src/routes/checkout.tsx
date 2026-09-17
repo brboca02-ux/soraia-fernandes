@@ -630,4 +630,61 @@ function CheckoutPage() {
   );
 }
 
-const inp
+const inp =
+  "w-full h-10 px-3 rounded border border-border bg-background text-sm outline-none focus:ring-1 focus:ring-primary";
+
+function Section({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="border border-border rounded-md p-5">
+      <h2 className="flex items-center gap-2 font-display text-lg mb-4">
+        <span className="text-primary">{icon}</span>
+        {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="block text-[11px] uppercase tracking-wide text-muted-foreground mb-1">
+        {label}
+      </span>
+      {children}
+    </label>
+  );
+}
+
+function Row({
+  label,
+  value,
+  bold,
+  muted,
+  className,
+}: {
+  label: string;
+  value: string;
+  bold?: boolean;
+  muted?: boolean;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`flex items-center justify-between ${bold ? "text-base font-semibold" : ""} ${
+        muted ? "text-muted-foreground" : ""
+      } ${className ?? ""}`}
+    >
+      <span>{label}</span>
+      <span>{value}</span>
+    </div>
+  );
+}
