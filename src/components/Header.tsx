@@ -29,7 +29,7 @@ const COMPRAR: MegaContent = {
     {
       title: "Coleções",
       items: [
-        { label: "Lançamento do site, Oportunidade UNICA, Apenas para os Primeiros Pedidos", c: "recebidos-da-semana" },
+        { label: "Lançamento", c: "recebidos-da-semana" },
         { label: "Promoções", c: "promocoes", highlight: true },
       ],
     },
