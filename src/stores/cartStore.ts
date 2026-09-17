@@ -114,8 +114,27 @@ export const useCartStore = create<CartStore>()(
       checkoutUrl: null,
       isLoading: false,
       isSyncing: false,
+            addItem: async (incomingItem) => {
+                  const cleanId = (id?: string) => {
+            if (!id) return id;
+            const cleaned = id.replace(/^mock:/, "");
+            return cleaned.includes("/") ? cleaned.split("/").pop() : cleaned;
+          };
 
-      addItem: async (item) => {
+          const item = {
+            ...incomingItem,
+            productId: cleanId((incomingItem as any).productId),
+            variantId: cleanId(incomingItem.variantId) || incomingItem.variantId,
+            product: incomingItem.product?.node
+              ? {
+                  ...incomingItem.product,
+                  node: {
+                    ...incomingItem.product.node,
+                    id: cleanId(incomingItem.product.node.id) || incomingItem.product.node.id,
+                  },
+                }
+              : incomingItem.product,
+          };
         const { items, cartId, clearCart } = get();
         const existing = items.find((i) => i.variantId === item.variantId);
         set({ isLoading: true });

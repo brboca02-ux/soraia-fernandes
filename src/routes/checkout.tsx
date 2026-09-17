@@ -268,15 +268,18 @@ function CheckoutPage() {
         },
         items: items.map((i) => {
           const rawId = (i as any).productId || (i as any).product_id || i.product?.node?.id || i.variantId || "";
-          const cleanId = typeof rawId === "string" && rawId.includes("/") ? rawId.split("/").pop() : rawId;
-          return {
-            product_id: cleanId || null,
-            product_name: i.product?.node?.title || "Produto",
-            variant_size: i.selectedOptions?.find((o) => /tam|size/i.test(o.name))?.value || null,
-            variant_color: i.selectedOptions?.find((o) => /cor|color/i.test(o.name))?.value || null,
-            unit_price: parseFloat(i.price?.amount || "0"),
-            quantity: i.quantity,
-          };
+          // Limpa prefixo de URL da Shopify e remove o prefixo "mock:"
+          const cleanId = (typeof rawId === "string" ? rawId.split("/").pop() || "" : String(rawId))
+        .replace(/^mock:/, "");
+
+        return {
+        product_id: cleanId || null,
+        product_name: i.product?.node?.title || "Produto",
+        variant_size: i.selectedOptions?.find((o) => /tam|size/i.test(o.name))?.value || null,
+        variant_color: i.selectedOptions?.find((o) => /cor|color/i.test(o.name))?.value || null,
+        unit_price: parseFloat(i.price?.amount || "0"),
+        quantity: i.quantity,
+      };
         }),
         subtotal: +subtotal.toFixed(2),
         shipping_cost: +shippingCost.toFixed(2),
