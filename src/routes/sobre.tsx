@@ -1,4 +1,3 @@
-﻿<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>tsx
 import { createFileRoute } from "@tanstack/react-router";
 import { MapPin, MessageCircle, Clock, Heart } from "lucide-react";
 import { STORE_INFO, buildWhatsAppLink } from "@/lib/shopify";
@@ -105,7 +104,7 @@ function SobrePage() {
           <div className="order-1 md:order-2 aspect-[4/3] overflow-hidden rounded-md border border-border">
             <iframe
               title="Mapa Soraia Fernandes Joinville"
-              src={STORE_INFO.mapsEmbed || STORE_INFO.mapEmbed}
+              src={STORE_INFO.mapsEmbed}
               className="w-full h-full"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -117,4 +116,4 @@ function SobrePage() {
   );
 }
 
-export default SobrePage;</body></html>
+export default SobrePage;
