@@ -104,7 +104,7 @@ function SobrePage() {
           <div className="order-1 md:order-2 aspect-[4/3] overflow-hidden rounded-md border border-border">
             <iframe
               title="Mapa Soraia Fernandes Joinville"
-              src={STORE_INFO.mapsEmbed || STORE_INFO.mapEmbed}
+              src={STORE_INFO.mapsEmbed}
               className="w-full h-full"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
