@@ -673,4 +673,29 @@ const inp = "w-full h-10 px-3 rounded-md border border-border bg-background text
 function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
   return (
     <section className="border border-border rounded-md p-5 bg-background">
-      <h2 className="font-display text-lg mb-4 flex items-</body></html>
+      <h2 className="font-display text-lg mb-4 flex items-center gap-2">
+        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">{icon}</span>
+        {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="block text-xs font-medium text-muted-foreground mb-1">{label}</span>
+      {children}
+    </label>
+  );
+}
+
+function Row({ label, value, bold, muted, className }: { label: string; value: string; bold?: boolean; muted?: boolean; className?: string }) {
+  return (
+    <div className={`flex justify-between ${bold ? "text-base font-semibold pt-2 border-t border-border" : ""} ${muted ? "text-muted-foreground" : ""} ${className || ""}`}>
+      <span>{label}</span>
+      <span>{value}</span>
+    </div>
+  );
+}</body></html>
