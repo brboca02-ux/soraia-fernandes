@@ -13,13 +13,20 @@ import { RelatedProducts } from "@/components/RelatedProducts";
 
 export const Route = createFileRoute("/produto/$handle")({
   head: ({ params }) => {
-    const desc = `Compre ${params.handle} na Soraia Fernandes: vestidos de festa e moda feminina, envio para todo o Brasil e atendimento pelo WhatsApp.`;
+    const displayName = params.handle
+      .replace(/[-_]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/\b\p{Ll}/gu, (c) => c.toUpperCase());
+    const title = `${displayName} — Soraia Fernandes`;
+    const desc = `Compre ${displayName} na Soraia Fernandes: vestidos de festa e moda feminina, envio para todo o Brasil e atendimento pelo WhatsApp.`;
     return {
       meta: [
-        { title: `${params.handle} — Soraia Fernandes` },
+        { title },
         { name: "description", content: desc },
-        { property: "og:title", content: `${params.handle} — Soraia Fernandes` },
+        { property: "og:title", content: title },
         { property: "og:description", content: desc },
+
         { name: "twitter:description", content: desc },
         { property: "og:url", content: `https://soraiafernandesmodafesta.com.br/produto/${params.handle}` },
         { property: "og:type", content: "product" },
