@@ -506,8 +506,8 @@ function CheckoutPage() {
             </button>
           </div>
         </div>
-      </div>
     )}
+
 
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-12">
         <h1 className="font-display text-3xl md:text-4xl tracking-tight">Finalizar Compra</h1>
