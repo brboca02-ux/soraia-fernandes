@@ -84,7 +84,7 @@ function CheckoutPage() {
   const [quotesLoading, setQuotesLoading] = useState(false);
   const [shippingCode, setShippingCode] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
-  const [submitStage, setSubmitStage] = useState<"idle" | "creating" | "processing" | "redirecting">("idle");
+  const [submitStage, setSubmitStage] = useState<"idle" | "creating" | "processing" | "redirecting" | "error">("idle");
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [validatingCoupon, setValidatingCoupon] = useState(false);
@@ -117,7 +117,11 @@ function CheckoutPage() {
   const itemsCount = items.reduce((s, i) => s + i.quantity, 0);
   const selectedQuote = quotes.find((q) => q.code === shippingCode);
   const shippingCost = selectedQuote?.price ?? 0;
-  const discount = appliedCoupon ? calculateDiscount(subtotal, appliedCoupon) : 0;
+  const automaticDiscount = subtotal > 439.90 ? subtotal - 439.90 : 0;
+  const couponDiscount = appliedCoupon
+    ? calculateDiscount(subtotal, appliedCoupon)
+    : 0;
+  const discount = automaticDiscount + couponDiscount;
   const total = subtotal + shippingCost - discount;
 
   useEffect(() => {
@@ -314,53 +318,64 @@ function CheckoutPage() {
         coupon_code: appliedCoupon?.code,
       });
 
-      setSubmitStage("processing");
+          setSubmitStage("processing");
 
-      let paymentUrl: string | undefined;
-      try {
-        const pay = await payment.createPayment({
-          orderId: order.id,
-          orderNumber: order.order_number,
-          amount: order.total,
-          customer: {
-            name: v.name,
-            email: v.email,
-            cpf: onlyDigits(v.cpf ?? "") || undefined,
-            phone: onlyDigits(v.phone ?? "") || undefined,
-          },
-        });
-        paymentUrl = pay.paymentUrl;
+          let paymentUrl: string | undefined;
 
-        await supabase.rpc("attach_order_payment", {
-          p_order_id: order.id,
-          p_provider: pay.provider,
-          p_payment_id: pay.paymentId,
-          p_payment_url: pay.paymentUrl ?? undefined,
-        });
-      } catch (e: any) {
-        console.warn("Pagamento não pôde ser iniciado:", e);
-      }
+          try {
+            const pay = await payment.createPayment({
+              orderId: order.id,
+              orderNumber: order.order_number,
+              amount: order.total,
+              customer: {
+                name: v.name,
+                email: v.email,
+                cpf: onlyDigits(v.cpf ?? "") || undefined,
+                phone: onlyDigits(v.phone ?? "") || undefined,
+              },
+            });
 
-      setSubmitStage("redirecting");
-      clearCart();
-      try {
-        localStorage.removeItem(DRAFT_KEY);
-      } catch {}
-      toast.success("Pedido criado!", { description: order.order_number });
+            // Sem URL, não existe checkout para onde redirecionar.
+            if (!pay?.paymentUrl) {
+              throw new Error("A InfinitePay não retornou uma URL de pagamento.");
+            }
 
-      if (paymentUrl) {
-        window.location.href = paymentUrl;
-        return;
-      }
-      navigate({ to: "/pedido/sucesso/$numero", params: { numero: order.order_number }, search: { email: v.email } });
-    } catch (e) {
-      console.error(e);
-      toast.error("Não foi possível finalizar o pedido", { description: (e as Error).message });
-      setSubmitStage("idle");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+            paymentUrl = pay.paymentUrl;
+
+            await supabase.rpc("attach_order_payment", {
+              p_order_id: order.id,
+              p_provider: pay.provider,
+              p_payment_id: pay.paymentId,
+              p_payment_url: pay.paymentUrl,
+            });
+            } catch (e: any) {
+            console.error("Pagamento não pôde ser iniciado:", e);
+            setSubmitStage("error");
+            toast.error("Não foi possível iniciar o pagamento.", {
+              description: "O pagamento não foi iniciado. Tente novamente.",
+            });
+            return;
+          }
+
+          setSubmitStage("redirecting");
+            clearCart();
+            try {
+              localStorage.removeItem(DRAFT_KEY);
+            } catch {}
+            toast.success("Pedido criado!", { description: order.order_number });
+            window.location.href = paymentUrl;
+            
+            return;
+
+            }
+            catch (e) {
+            console.error(e);
+            toast.error("Não foi possível finalizar o pedido", { description: (e as Error).message });
+            setSubmitStage("idle");
+          } finally {
+            setSubmitting(false);
+          }
+        };
 
   const stageMessage =
     submitStage === "creating"
@@ -583,6 +598,7 @@ function CheckoutPage() {
               </div>
               <div className="mt-5 pt-4 border-t border-border space-y-2 text-sm">
                 <Row label="Subtotal" value={formatPrice(subtotal, "BRL")} />
+
                 <Row
                   label="Frete"
                   value={

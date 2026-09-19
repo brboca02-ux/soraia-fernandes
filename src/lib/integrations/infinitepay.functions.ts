@@ -1,6 +1,10 @@
 // InfinitePay — checkout por link público (handle da loja).
-// O valor é SEMPRE lido do banco pelo order_number; o client nunca define preço.
-// A confirmação usa o endpoint público de verificação de transação da InfinitePay.
+// O valor é sempre lido do banco pelo order_number.
+// O cliente nunca define o preço.
+// A loja trabalha somente com retirada na loja:
+// - sem frete
+// - sem desconto
+// - total = soma dos produtos
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
@@ -8,17 +12,29 @@ import { z } from "zod";
 export const INFINITEPAY_HANDLE = "soraia-cristina-4n6";
 
 const CHECKOUT_BASE = "https://checkout.infinitepay.io";
+
 const PAYMENT_CHECK_URL =
   "https://api.infinitepay.io/invoices/public/checkout/payment_check";
 
 async function getAdmin() {
-  const supaUrl = process.env.EXTERNAL_SUPABASE_URL ?? process.env.SUPABASE_URL;
+  const supaUrl =
+    process.env.EXTERNAL_SUPABASE_URL ?? process.env.SUPABASE_URL;
+
   const supaKey =
-    process.env.EXTERNAL_SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!supaUrl || !supaKey) throw new Error("Banco não configurado");
+    process.env.EXTERNAL_SUPABASE_SERVICE_ROLE_KEY ??
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supaUrl || !supaKey) {
+    throw new Error("Banco não configurado");
+  }
+
   const { createClient } = await import("@supabase/supabase-js");
+
   return createClient(supaUrl, supaKey, {
-    auth: { persistSession: false, autoRefreshToken: false },
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
   });
 }
 
@@ -39,56 +55,99 @@ export const createInfinitePayCheckout = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const admin = await getAdmin();
 
+    // Busca somente os dados necessários.
+    // shipping_cost e discount não participam mais do pagamento.
     const { data: ord, error: ordErr } = await admin
       .from("orders")
-      .select("id, total, shipping_cost, discount, status")
+      .select("id, total, status")
       .eq("order_number", data.orderNumber)
       .maybeSingle();
-    if (ordErr || !ord) throw new Error("Pedido não encontrado");
+
+    if (ordErr || !ord) {
+      throw new Error("Pedido não encontrado");
+    }
+
     if (ord.status !== "aguardando_pagamento") {
       throw new Error("Pedido não está aguardando pagamento");
     }
 
-    const { data: rows } = await admin
+    const { data: rows, error: rowsErr } = await admin
       .from("order_items")
       .select("product_name, quantity, unit_price")
       .eq("order_id", ord.id);
 
+    if (rowsErr) {
+      throw new Error("Não foi possível carregar os itens do pedido");
+    }
+
+    if (!rows || rows.length === 0) {
+      throw new Error("Pedido sem produtos");
+    }
+
     const total = Number(ord.total);
-    if (!Number.isFinite(total) || total <= 0) throw new Error("Valor do pedido inválido");
+
+    if (!Number.isFinite(total) || total <= 0) {
+      throw new Error("Valor do pedido inválido");
+    }
+
     const totalCents = Math.round(total * 100);
 
-    // Itens detalhados + linha de ajuste (frete/desconto) para bater o total exato.
-    const items = (rows ?? []).map((r) => ({
+    // Monta os produtos exatamente como estão registrados no banco.
+    const items = rows.map((r) => ({
       name: String(r.product_name).slice(0, 60),
       price: Math.round(Number(r.unit_price) * 100),
       quantity: Number(r.quantity),
     }));
-    const itemsCents = items.reduce((s, i) => s + i.price * i.quantity, 0);
-    const diff = totalCents - itemsCents;
-    if (items.length === 0) {
-      items.push({ name: `Pedido ${data.orderNumber}`, price: totalCents, quantity: 1 });
-    } else if (diff > 0) {
-      items.push({ name: "Frete", price: diff, quantity: 1 });
-    } else if (diff < 0) {
-      // Desconto: InfinitePay não aceita valor negativo — colapsa em um item único.
-      items.length = 0;
-      items.push({ name: `Pedido ${data.orderNumber}`, price: totalCents, quantity: 1 });
+
+    // Soma exclusivamente os produtos.
+    // Não existe frete nem desconto.
+    const itemsCents = items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
+    );
+
+    // O total do pedido precisa ser exatamente igual à soma dos produtos.
+    // Se houver qualquer diferença, não criamos uma linha artificial
+    // de frete ou desconto.
+    if (itemsCents !== totalCents) {
+      console.error("Total do pedido não corresponde aos produtos", {
+        orderNumber: data.orderNumber,
+        totalCents,
+        itemsCents,
+        difference: totalCents - itemsCents,
+      });
+
+      throw new Error(
+        "O total do pedido não corresponde à soma dos produtos",
+      );
     }
 
     const redirectUrl = new URL(
       `/pedido/sucesso/${encodeURIComponent(data.orderNumber)}`,
       data.siteUrl,
     );
-    if (data.customer?.email) redirectUrl.searchParams.set("email", data.customer.email);
+
+    if (data.customer?.email) {
+      redirectUrl.searchParams.set("email", data.customer.email);
+    }
 
     const url = new URL(`${CHECKOUT_BASE}/${INFINITEPAY_HANDLE}`);
+
     url.searchParams.set("items", JSON.stringify(items));
     url.searchParams.set("order_nsu", data.orderNumber);
     url.searchParams.set("redirect_url", redirectUrl.toString());
-    if (data.customer?.name) url.searchParams.set("customer_name", data.customer.name);
-    if (data.customer?.email) url.searchParams.set("customer_email", data.customer.email);
-    if (data.customer?.phone) url.searchParams.set("customer_cellphone", data.customer.phone);
+
+    if (data.customer?.name) {
+      url.searchParams.set("customer_name", data.customer.name);
+    }
+
+    if (data.customer?.email) {
+      url.searchParams.set("customer_email", data.customer.email);
+    }
+
+    if (data.customer?.phone) {
+      url.searchParams.set("customer_cellphone", data.customer.phone);
+    }
 
     return {
       provider: "infinitepay",
@@ -113,12 +172,23 @@ export const checkInfinitePayPayment = createServerFn({ method: "POST" })
       .select("id, total, status")
       .eq("order_number", data.orderNumber)
       .maybeSingle();
-    if (!ord) throw new Error("Pedido não encontrado");
-    if (ord.status === "pago") return { paid: true, alreadyPaid: true };
+
+    if (!ord) {
+      throw new Error("Pedido não encontrado");
+    }
+
+    if (ord.status === "pago") {
+      return {
+        paid: true,
+        alreadyPaid: true,
+      };
+    }
 
     const res = await fetch(PAYMENT_CHECK_URL, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({
         handle: INFINITEPAY_HANDLE,
         transaction_nsu: data.transactionNsu,
@@ -126,25 +196,50 @@ export const checkInfinitePayPayment = createServerFn({ method: "POST" })
         ...(data.slug ? { slug: data.slug } : {}),
       }),
     });
+
     if (!res.ok) {
-      console.error("InfinitePay payment_check falhou:", res.status, await res.text());
-      return { paid: false, error: "check_failed" as const };
+      console.error(
+        "InfinitePay payment_check falhou:",
+        res.status,
+        await res.text(),
+      );
+
+      return {
+        paid: false,
+        error: "check_failed" as const,
+      };
     }
+
     const json = (await res.json()) as {
       success?: boolean;
       paid?: boolean;
       amount?: number;
-availability?: unknown;
+      availability?: unknown;
     };
-    const paid = Boolean(json.success ?? json.paid);
-    if (!paid) return { paid: false };
 
-    // Valida o valor quando a InfinitePay o devolve (em centavos).
+    const paid = Boolean(json.success ?? json.paid);
+
+    if (!paid) {
+      return {
+        paid: false,
+      };
+    }
+
+    // Confirma que o valor efetivamente pago corresponde
+    // ao total dos produtos do pedido.
     if (typeof json.amount === "number") {
       const expected = Math.round(Number(ord.total) * 100);
+
       if (Math.abs(json.amount - expected) > 1) {
-        console.error("InfinitePay amount mismatch", { expected, got: json.amount });
-        return { paid: false, error: "amount_mismatch" as const };
+        console.error("InfinitePay amount mismatch", {
+          expected,
+          got: json.amount,
+        });
+
+        return {
+          paid: false,
+          error: "amount_mismatch" as const,
+        };
       }
     }
 
@@ -157,7 +252,20 @@ availability?: unknown;
         payment_id: data.transactionNsu,
       })
       .eq("id", ord.id);
-    if (error) throw new Error(error.message);
 
-    return { paid: true };
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return {
+      paid: true,
+    };
   });
+    </style>
+      </head><body><div class="preview-root">
+            <h1>Preview</h1><p>Estilos aplicados ao documento de exemplo.</p><button class="btn">
+                  Botão</button><div class="card price-card best-offer"><div class="price-name">Plano</div>
+      <div class="price-value">R$ 99</div>
+  
+    </div>
+  </div>

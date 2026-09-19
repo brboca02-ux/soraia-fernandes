@@ -324,7 +324,7 @@ MÓDULOS EXTRAS
 
  Popup de captura de leads
 
- Banner de frete grátis
+
 
  Contador de estoque
 

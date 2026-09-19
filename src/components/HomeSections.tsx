@@ -38,7 +38,7 @@ const categories = [
 
 const diferenciais = [
   { i: Truck, t: "Frete para todo Brasil", d: "Envio expresso e seguro" },
-  { i: RefreshCcw, t: "Troca facilitada", d: "Até 30 dias para você decidir" },
+  { i: RefreshCcw, t: "Troca facilitada", d: "Até 7 dias para você decidir" },
   { i: ShieldCheck, t: "Compra segura", d: "Pagamento criptografado" },
   { i: MessageCircle, t: "Atendimento humanizado", d: "Consultoras dedicadas" },
 ];
