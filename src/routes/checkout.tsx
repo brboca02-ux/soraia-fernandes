@@ -428,23 +428,25 @@ function CheckoutPage() {
       <div className="bg-background min-h-screen">
     {showExitOffer && (
       <div
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-4"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
         role="dialog"
         aria-modal="true"
         aria-labelledby="exit-offer-title"
+        onClick={() => setShowExitOffer(false)}
       >
-        <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-background shadow-2xl">
-          <div className="text-center">
+        <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-background shadow-2xl border border-border grid md:grid-cols-2"
+          onClick={(e) => e.stopPropagation()}
+          >
              {/* Botão fechar */}
              <button
                 type="button"
                 onClick={() => setShowExitOffer(false)}
                 aria-label="Fechar oferta"
-                className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70"
+                className="absolute right-3 top-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/70"
               >
                 <CloseIcon className="h-4 w-4" />
               </button>
-                    {/* Imagem do produto */}
+                    {/* Imagem do produto ao lado (altura total) */}
                      {items[0]?.product?.node?.images?.edges?.[0]?.node?.url && (
                <div className="relative aspect-[4/3] w-full overflow-hidden bg-secondary">
                 <img
