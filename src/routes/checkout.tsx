@@ -477,6 +477,10 @@ function CheckoutPage() {
 
       {/* COLUNA DIREITA: TODO O CONTEÚDO */}
       <div className="flex min-w-0 flex-col justify-center p-5 sm:p-7 md:p-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-12">
+          <h1 className="font-display text-3xl md:text-4xl tracking-tight">Finalizar Compra</h1>
+          <p className="text-sm text-muted-foreground mt-1">Preencha seus dados para concluir o pedido.</p>
+
 
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
           Oferta promocional
