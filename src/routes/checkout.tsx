@@ -426,6 +426,7 @@ function CheckoutPage() {
 
   return ( 
       <div className="bg-background min-h-screen">
+         {/* 1. MODAL DE OFERTA DE SAÍDA */}
         {showExitOffer && (
       <div
     className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-3 sm:p-4 backdrop-blur-sm"
@@ -524,6 +525,4 @@ function CheckoutPage() {
       </div>
     </div>
   </div>
-      )}
-      </div>
-  )}
+      )}  
