@@ -28,7 +28,7 @@ function currentSiteUrl(): string {
   if (typeof window !== "undefined" && window.location?.origin) {
     return window.location.origin;
   }
-  return "https://www.soraiafernandes.com.br";
+  return "https://soraiafernandesmodafesta.com.br";
 }
 
 export const InfinitePayProvider: PaymentProvider = {

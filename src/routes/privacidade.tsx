@@ -8,11 +8,11 @@ export const Route = createFileRoute("/privacidade")({
       { name: "description", content: "Como a Soraia Fernandes coleta, usa e protege seus dados pessoais. Política de privacidade em conformidade com a LGPD." },
       { property: "og:title", content: "Política de Privacidade — Soraia Fernandes" },
       { property: "og:description", content: "Transparência sobre coleta de dados, cookies, Google Analytics, Meta Pixel, WhatsApp e newsletter." },
-      { property: "og:url", content: "https://www.soraiafernandes.com.br/privacidade" },
+      { property: "og:url", content: "https://soraiafernandesmodafesta.com.br/privacidade" },
       { property: "og:type", content: "article" },
       { name: "robots", content: "index, follow" },
     ],
-    links: [{ rel: "canonical", href: "https://www.soraiafernandes.com.br/privacidade" }],
+    links: [{ rel: "canonical", href: "https://soraiafernandesmodafesta.com.br/privacidade" }],
   }),
   component: PrivacidadePage,
 });
