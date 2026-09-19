@@ -16,8 +16,20 @@ export const Route = createFileRoute("/api/public/img/$")({
           return new Response("Not found", { status: 404 });
         }
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { data, error } = await supabaseAdmin.storage
+        const { createClient } = await import("@supabase/supabase-js");
+        const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
+        const client = createClient(process.env["SUPABASE_URL"]!, key, {
+          auth: { persistSession: false },
+          global: {
+            fetch: (input, init) => {
+              const h = new Headers(init?.headers);
+              if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
+              h.set("apikey", key);
+              return fetch(input, { ...init, headers: h });
+            },
+          },
+        });
+        const { data, error } = await client.storage
           .from("product-images")
           .download(path);
 
