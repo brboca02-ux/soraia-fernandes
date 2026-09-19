@@ -426,401 +426,103 @@ function CheckoutPage() {
 
   return ( 
       <div className="bg-background min-h-screen">
-    {showExitOffer && (
-      <div
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="exit-offer-title"
+{showExitOffer && (
+  <div
+    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-3 sm:p-4 backdrop-blur-sm"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="exit-offer-title"
+    onClick={() => setShowExitOffer(false)}
+  >
+    <div
+      className="relative grid w-full max-w-2xl max-h-[90dvh] grid-cols-1 overflow-y-auto rounded-2xl border border-border bg-background shadow-2xl md:grid-cols-2 md:overflow-hidden"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Botão fechar */}
+      <button
+        type="button"
         onClick={() => setShowExitOffer(false)}
+        aria-label="Fechar oferta"
+        className="absolute right-3 top-3 z-30 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70"
       >
-        <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-background shadow-2xl border border-border grid md:grid-cols-2"
-          onClick={(e) => e.stopPropagation()}
-          >
-             {/* Botão fechar */}
-             <button
-                type="button"
-                onClick={() => setShowExitOffer(false)}
-                aria-label="Fechar oferta"
-                className="absolute right-3 top-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/70"
-              >
-                <CloseIcon className="h-4 w-4" />
-              </button>
-                    {/* Imagem do produto ao lado (altura total) */}
-                     {items[0]?.product?.node?.images?.edges?.[0]?.node?.url && (
-               <div className="relative aspect-[4/3] w-full overflow-hidden bg-secondary">
-                <img
-                  src={items[0].product.node.images.edges[0].node.url}
-                  alt={items[0].product.node.title || "Produto no carrinho"}
-                  className="h-full w-full object-cover"
-                />
-                {/* Overlay para destacar a oferta */}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-5 pt-16">
-                    <span className="inline-flex rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-black">
-                      Oferta especial
-                    </span>
-                  </div>
-                  </div>
-                )}
-        
+        <CloseIcon className="h-4 w-4" />
+      </button>
 
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
-              Oferta promocional
-            </p>
-            <h2
-              id="exit-offer-title"
-              className="font-display mt-2 text-2xl"
-            >
-              Espere! Não perca seu preço promocional
-            </h2>
-
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Seu produto está com uma condição promocional especial.
-              Aproveite agora antes de sair desta página.
-            </p>
-
-            <div className="mt-5 rounded-lg bg-secondary/50 p-4">
-              <p className="text-xs text-muted-foreground">
-                Preço promocional
-              </p>
-
-              <p className="mt-1 text-3xl font-semibold">
-                {formatPrice(439.90, "BRL")}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setShowExitOffer(false)}
-              className="mt-5 w-full h-11 bg-foreground text-background text-[11px] font-medium uppercase tracking-[0.2em]"
-            >
-              Continuar minha compra
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setShowExitOffer(false)}
-              className="mt-3 text-xs text-muted-foreground underline underline-offset-4"
-            >
-              Quero sair mesmo assim
-            </button>
+      {/* COLUNA ESQUERDA: IMAGEM */}
+      <div className="relative min-h-[220px] overflow-hidden bg-secondary md:min-h-[480px]">
+        {items[0]?.product?.node?.images?.edges?.[0]?.node?.url ? (
+          <img
+            src={items[0].product.node.images.edges[0].node.url}
+            alt={
+              items[0].product.node.title ||
+              "Produto no carrinho"
+            }
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-sm text-muted-foreground">
+              Produto
+            </span>
           </div>
+        )}
+
+        {/* Selo da oferta */}
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5 pt-16">
+          <span className="inline-flex rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-black">
+            Oferta especial
+          </span>
         </div>
       </div>
-    )}
 
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-12">
-        <h1 className="font-display text-3xl md:text-4xl tracking-tight">Finalizar Compra</h1>
-        <p className="text-sm text-muted-foreground mt-1">Preencha seus dados para concluir o pedido.</p>
+      {/* COLUNA DIREITA: TODO O CONTEÚDO */}
+      <div className="flex min-w-0 flex-col justify-center p-5 sm:p-7 md:p-8">
 
-        <ol aria-label="Etapas do checkout" className="mt-6 grid grid-cols-4 gap-2 sm:gap-3">
-          {[
-            { label: "Identificação", done: stepIdentDone },
-            { label: "Endereço", done: stepAddrDone },
-            { label: "Frete", done: stepShipDone },
-            { label: "Pagamento", done: true },
-          ].map((s, i) => (
-            <li key={s.label} className="flex items-center gap-2 min-w-0">
-              <span
-                aria-hidden="true"
-                className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold ${
-                  s.done ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
-                }`}
-              >
-                {s.done ? <Check className="h-3.5 w-3.5" /> : i + 1}
-              </span>
-              <span className={`text-[11px] sm:text-xs truncate ${s.done ? "text-foreground font-medium" : "text-muted-foreground"}`}>
-                {s.label}
-              </span>
-            </li>
-          ))}
-        </ol>
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
+          Oferta promocional
+        </p>
 
-        <fieldset disabled={submitting} className="grid lg:grid-cols-[1fr_380px] gap-8 mt-8 disabled:opacity-70 border-0 p-0 m-0">
-          <div className="space-y-8">
-            {/* Identificação */}
-            <Section icon={<User className="h-4 w-4" />} title="Seus dados">
-              <div className="grid sm:grid-cols-2 gap-3">
-                <Field label="Nome completo *">
-                  <input value={name} onChange={(e) => setName(e.target.value)} className={inp} placeholder="Maria Silva" />
-                </Field>
-                <Field label="E-mail *">
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inp} placeholder="voce@email.com" />
-                </Field>
-                <Field label="Telefone / WhatsApp">
-                  <input value={phone} onChange={(e) => setPhone(e.target.value)} className={inp} placeholder="(47) 99999-9999" />
-                </Field>
-                <Field label="CPF">
-                  <input value={cpf} onChange={(e) => setCpf(e.target.value)} className={inp} placeholder="000.000.000-00" />
-                </Field>
-              </div>
-            </Section>
+        <h2
+          id="exit-offer-title"
+          className="mt-3 font-display text-2xl leading-tight sm:text-3xl"
+        >
+          Espere! Não perca seu preço promocional
+        </h2>
 
-            {/* Endereço */}
-            <Section icon={<MapPin className="h-4 w-4" />} title="Endereço de entrega">
-              <div className="grid sm:grid-cols-[180px_1fr] gap-3">
-                <Field label="CEP *">
-                  <div className="relative">
-                    <input
-                      value={cep}
-                      onChange={(e) => setCep(formatCep(e.target.value))}
-                      onBlur={onCepBlur}
-                      className={inp}
-                      placeholder="00000-000"
-                      inputMode="numeric"
-                      maxLength={9}
-                    />
-                    {cepLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />}
-                  </div>
-                </Field>
-                <Field label="Rua *">
-                  <input value={street} onChange={(e) => setStreet(e.target.value)} className={inp} />
-                </Field>
-                <Field label="Número *">
-                  <input value={number} onChange={(e) => setNumber(e.target.value)} className={inp} />
-                </Field>
-                <Field label="Complemento">
-                  <input value={complement} onChange={(e) => setComplement(e.target.value)} className={inp} placeholder="Apto, bloco…" />
-                </Field>
-                <Field label="Bairro *">
-                  <input value={district} onChange={(e) => setDistrict(e.target.value)} className={inp} />
-                </Field>
-                <div className="grid grid-cols-[1fr_80px] gap-3">
-                  <Field label="Cidade *">
-                    <input value={city} onChange={(e) => setCity(e.target.value)} className={inp} />
-                  </Field>
-                  <Field label="UF *">
-                    <input value={stateUf} onChange={(e) => setStateUf(e.target.value.toUpperCase())} className={inp} maxLength={2} />
-                  </Field>
-                </div>
-              </div>
-            </Section>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          Seu produto está com uma condição promocional
+          especial. Aproveite agora antes de sair desta página.
+        </p>
 
-            {/* Frete */}
-            <Section icon={<Truck className="h-4 w-4" />} title="Frete">
-              {onlyDigits(cep).length !== 8 ? (
-                <p className="text-sm text-muted-foreground">Informe o CEP para ver as opções de entrega.</p>
-              ) : quotesLoading || quotes.length === 0 ? (
-                <div className="space-y-2" aria-live="polite" aria-busy="true">
-                  <p className="text-xs text-muted-foreground flex items-center gap-2">
-                    <Loader2 className="h-3 w-3 animate-spin" /> Calculando opções de entrega…
-                  </p>
-                  {[0, 1, 2].map((k) => (
-                    <div key={k} className="flex items-center justify-between border border-border rounded-md p-3">
-                      <div className="flex items-center gap-3 flex-1">
-                        <div className="h-4 w-4 rounded-full bg-secondary animate-pulse" />
-                        <div className="flex-1 space-y-1.5">
-                          <div className="h-3 w-32 bg-secondary rounded animate-pulse" />
-                          <div className="h-2.5 w-48 bg-secondary/70 rounded animate-pulse" />
-                        </div>
-                      </div>
-                      <div className="h-4 w-14 bg-secondary rounded animate-pulse" />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {quotes.map((q) => (
-                    <label
-                      key={q.code}
-                      className={`flex items-center justify-between border rounded-md p-3 cursor-pointer transition ${
-                        shippingCode === q.code ? "border-primary bg-primary/5" : "border-border hover:border-foreground/40"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <input type="radio" name="ship" checked={shippingCode === q.code} onChange={() => setShippingCode(q.code)} />
-                        <div>
-                          <p className="text-sm font-medium">{q.name}</p>
-                          <p className="text-xs text-muted-foreground">{q.description ?? `Entrega em até ${q.days} dia${q.days > 1 ? "s" : ""} úteis`}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <span className="block text-sm font-semibold">
-                          {q.code === "cotacao" ? "A consultar" : q.price === 0 ? "Grátis" : formatPrice(q.price, "BRL")}
-                        </span>
-                        {q.code !== "cotacao" && (
-                          <span className="block text-[11px] text-muted-foreground mt-0.5">
-                            Chega {estimatedDeliveryLabel(q.days)}
-                          </span>
-                        )}
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </Section>
+        {/* Preço */}
+        <div className="mt-5 rounded-lg bg-secondary/50 p-4">
+          <p className="text-xs text-muted-foreground">
+            Preço promocional
+          </p>
 
-            {/* Pagamento Seguro InfinitePay */}
-            <Section icon={<CreditCard className="h-4 w-4" />} title="Pagamento seguro">
-              <div className="border border-primary/40 bg-primary/[0.03] rounded-lg p-4 sm:p-5">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-sm">Pague com InfinitePay</span>
-                    <span className="text-[10px] uppercase font-bold bg-emerald-500/15 text-emerald-600 px-2 py-0.5 rounded">Oficial</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Lock className="h-3.5 w-3.5" /> Ambiente Seguro
-                  </div>
-                </div>
+          <p className="mt-1 text-3xl font-semibold">
+            {formatPrice(439.90, "BRL")}
+          </p>
+        </div>
 
-                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                  Ao clicar em <strong>Finalizar pedido</strong>, você será redirecionado para a tela oficial da InfinitePay, onde poderá escolher pagar via <strong>Pix</strong> (aprovação instantânea) ou <strong>Cartão de Crédito em até 12x</strong>.
-                </p>
+        {/* Botão principal */}
+        <button
+          type="button"
+          onClick={() => setShowExitOffer(false)}
+          className="mt-5 flex min-h-12 w-full items-center justify-center bg-foreground px-4 py-3 text-center text-[11px] font-medium uppercase tracking-[0.15em] text-background transition hover:bg-foreground/90"
+        >
+          Continuar minha compra
+        </button>
 
-                <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-border/60">
-                  <span className="text-[11px] text-muted-foreground font-medium">Aceita:</span>
-                  <span className="text-[11px] bg-secondary px-2.5 py-1 rounded font-medium">⚡ Pix</span>
-                  <span className="text-[11px] bg-secondary px-2.5 py-1 rounded font-medium">💳 Cartão de Crédito (até 12x)</span>
-                  <span className="text-[11px] bg-secondary px-2.5 py-1 rounded font-medium">🔒 InfinitePay Checkout</span>
-                </div>
-              </div>
-            </Section>
-          </div>
+        {/* Botão secundário */}
+        <button
+          type="button"
+          onClick={() => setShowExitOffer(false)}
+          className="mt-3 w-full py-2 text-center text-xs text-muted-foreground underline underline-offset-4 transition hover:text-foreground"
+        >
+          Quero sair mesmo assim
+        </button>
 
-          {/* Resumo */}
-          <aside className="lg:sticky lg:top-28 lg:self-start space-y-4">
-            <div className="border border-border rounded-md p-5 bg-secondary/30">
-              <h2 className="font-display text-lg mb-4">Resumo</h2>
-              <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
-                {items.map((i) => (
-                  <div key={i.variantId} className="flex gap-3 text-sm">
-                    <div className="w-12 h-16 bg-secondary overflow-hidden flex-shrink-0">
-                      {i.product.node.images?.edges?.[0]?.node && (
-                        <img src={i.product.node.images.edges[0].node.url} alt="" className="w-full h-full object-cover" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="line-clamp-2">{i.product.node.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {i.quantity}× · {i.selectedOptions.map((o) => o.value).join(" · ")}
-                      </p>
-                    </div>
-                    <span className="text-sm font-medium">{formatPrice(parseFloat(i.price.amount) * i.quantity, "BRL")}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-5 pt-4 border-t border-border space-y-2 text-sm">
-                <Row label="Subtotal" value={formatPrice(subtotal, "BRL")} />
-                {automaticDiscount > 0 && (
-                  <Row                                    
-                    label="Desconto promocional"
-                    value={`-${formatPrice(automaticDiscount, "BRL")}`}
-                    className="text-emerald-500 font-medium"
-                  />
-                )}
-
-                <Row
-                  label="Frete"
-                  value={
-                    selectedQuote?.code === "cotacao"
-                      ? "A consultar"
-                      : shippingCost === 0
-                      ? "Grátis"
-                      : formatPrice(shippingCost, "BRL")
-                  }
-                  muted={!shippingCode}
-                />
-                {selectedQuote && selectedQuote.code !== "cotacao" && (
-                  <Row label="Previsão de entrega" value={estimatedDeliveryLabel(selectedQuote.days)} muted />
-                )}
-                {appliedCoupon && (
-                  <Row
-                    label={`Cupom (${appliedCoupon.code})`}
-                    value={`-${formatPrice(discount, "BRL")}`}
-                    className="text-emerald-500 font-medium"
-                  />
-                )}
-                <Row label="Total" value={formatPrice(total, "BRL")} bold />
-              </div>
-
-              {!appliedCoupon ? (
-                <div className="mt-4 flex gap-2">
-                  <input
-                    type="text"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    placeholder="Cupom de desconto"
-                    className="flex-1 h-9 px-3 rounded border border-border bg-background text-xs outline-none focus:ring-1 focus:ring-primary"
-                  />
-                  <button
-                    onClick={handleApplyCoupon}
-                    disabled={validatingCoupon || !couponCode}
-                    className="h-9 px-4 bg-secondary text-foreground text-[10px] uppercase font-bold rounded hover:bg-secondary/80 disabled:opacity-50"
-                  >
-                    {validatingCoupon ? <Loader2 className="h-3 w-3 animate-spin" /> : "Aplicar"}
-                  </button>
-                </div>
-              ) : (
-                <div className="mt-4 flex items-center justify-between p-2 rounded bg-emerald-500/5 border border-emerald-500/20">
-                  <div className="flex items-center gap-2 text-[10px] text-emerald-600 font-bold uppercase">
-                    <Ticket className="h-3 w-3" /> {appliedCoupon.code}
-                  </div>
-                  <button onClick={removeCoupon} className="p-1 hover:text-red-500 transition">
-                    <CloseIcon className="h-3 w-3" />
-                  </button>
-                </div>
-              )}
-              <button
-                onClick={handleSubmit}
-                disabled={!canSubmit}
-                aria-live="polite"
-                className="w-full mt-5 bg-foreground text-background h-12 text-[11px] tracking-[0.25em] uppercase font-medium hover:bg-foreground/90 disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {submitting ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span className="tracking-normal normal-case text-xs">{stageMessage}</span>
-                  </>
-                ) : (
-                  <>
-                    Finalizar pedido <ChevronRight className="h-4 w-4" />
-                  </>
-                )}
-              </button>
-              {submitting && (
-                <p aria-live="polite" className="mt-2 text-[11px] text-muted-foreground text-center">
-                  Não feche esta janela — estamos processando seu pedido.
-                </p>
-              )}
-              <p className="mt-3 text-[10px] text-muted-foreground text-center">
-                Ao finalizar você concorda com nossos termos e política de privacidade.
-              </p>
-            </div>
-          </aside>
-        </fieldset>
       </div>
     </div>
-  );
-}
-
-const inp = "w-full h-10 px-3 rounded-md border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30";
-
-function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
-  return (
-    <section className="border border-border rounded-md p-5 bg-background">
-      <h2 className="font-display text-lg mb-4 flex items-center gap-2">
-        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">{icon}</span>
-        {title}
-      </h2>
-      {children}
-    </section>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="block text-xs font-medium text-muted-foreground mb-1">{label}</span>
-      {children}
-    </label>
-  );
-}
-
-function Row({ label, value, bold, muted, className }: { label: string; value: string; bold?: boolean; muted?: boolean; className?: string }) {
-  return (
-    <div className={`flex justify-between ${bold ? "text-base font-semibold pt-2 border-t border-border" : ""} ${muted ? "text-muted-foreground" : ""} ${className || ""}`}>
-      <span>{label}</span>
-      <span>{value}</span>
-    </div>
-  );
-}
+  </div>
