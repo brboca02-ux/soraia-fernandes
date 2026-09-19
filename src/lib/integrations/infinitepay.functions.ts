@@ -261,11 +261,3 @@ export const checkInfinitePayPayment = createServerFn({ method: "POST" })
       paid: true,
     };
   });
-    </style>
-      </head><body><div class="preview-root">
-            <h1>Preview</h1><p>Estilos aplicados ao documento de exemplo.</p><button class="btn">
-                  Botão</button><div class="card price-card best-offer"><div class="price-name">Plano</div>
-      <div class="price-value">R$ 99</div>
-  
-    </div>
-  </div>
