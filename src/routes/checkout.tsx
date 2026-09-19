@@ -433,8 +433,34 @@ function CheckoutPage() {
         aria-modal="true"
         aria-labelledby="exit-offer-title"
       >
-        <div className="w-full max-w-md rounded-xl bg-background p-6 shadow-2xl">
+        <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-background shadow-2xl">
           <div className="text-center">
+             {/* Botão fechar */}
+             <button
+                type="button"
+                onClick={() => setShowExitOffer(false)}
+                aria-label="Fechar oferta"
+                className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70"
+              >
+                <CloseIcon className="h-4 w-4" />
+              </button>
+                    {/* Imagem do produto */}
+                     {items[0]?.product?.node?.images?.edges?.[0]?.node?.url && (
+               <div className="relative aspect-[4/3] w-full overflow-hidden bg-secondary">
+                <img
+                  src={items[0].product.node.images.edges[0].node.url}
+                  alt={items[0].product.node.title || "Produto no carrinho"}
+                  className="h-full w-full object-cover"
+                />
+                {/* Overlay para destacar a oferta */}
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-5 pt-16">
+                    <span className="inline-flex rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-black">
+                      Oferta especial
+                    </span>
+                  </div>
+                  </div>
+                )}
+        
 
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
               Oferta promocional
