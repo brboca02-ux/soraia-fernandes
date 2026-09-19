@@ -598,6 +598,13 @@ function CheckoutPage() {
               </div>
               <div className="mt-5 pt-4 border-t border-border space-y-2 text-sm">
                 <Row label="Subtotal" value={formatPrice(subtotal, "BRL")} />
+                {automaticDiscount > 0 && (
+                  <Row                                    
+                    label="Desconto promocional"
+                    value={`-${formatPrice(automaticDiscount, "BRL")}`}
+                    className="text-emerald-500 font-medium"
+                  />
+                )}
 
                 <Row
                   label="Frete"
