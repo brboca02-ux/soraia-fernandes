@@ -85,6 +85,7 @@ function CheckoutPage() {
   const [shippingCode, setShippingCode] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [submitStage, setSubmitStage] = useState<"idle" | "creating" | "processing" | "redirecting" | "error">("idle");
+  const [showExitOffer, setShowExitOffer] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [validatingCoupon, setValidatingCoupon] = useState(false);
@@ -220,6 +221,25 @@ function CheckoutPage() {
       cancelled = true;
     };
   }, [cep, city, stateUf, subtotal, itemsCount]);
+
+  useEffect(() => {
+  const handleMouseLeave = (event: MouseEvent) => {
+    if (event.clientY <= 0 && !submitting) {
+      const alreadyShown = sessionStorage.getItem("checkout_exit_offer");
+
+      if (!alreadyShown) {
+        sessionStorage.setItem("checkout_exit_offer", "1");
+        setShowExitOffer(true);
+      }
+    }
+    } ;
+
+    document.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+    document.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, [submitting]);
 
   const onCepBlur = async () => {
     const c = onlyDigits(cep);
@@ -406,6 +426,67 @@ function CheckoutPage() {
 
   return (
     <div className="bg-background min-h-screen">
+      return (
+  <div className="bg-background min-h-screen">
+
+    {showExitOffer && (
+      <div
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-4"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="exit-offer-title"
+      >
+        <div className="w-full max-w-md rounded-xl bg-background p-6 shadow-2xl">
+          <div className="text-center">
+
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
+              Oferta promocional
+            </p>
+
+            <h2
+              id="exit-offer-title"
+              className="font-display mt-2 text-2xl"
+            >
+              Espere! Não perca seu preço promocional
+            </h2>
+
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Seu produto está com uma condição promocional especial.
+              Aproveite agora antes de sair desta página.
+            </p>
+
+            <div className="mt-5 rounded-lg bg-secondary/50 p-4">
+              <p className="text-xs text-muted-foreground">
+                Preço promocional
+              </p>
+
+              <p className="mt-1 text-3xl font-semibold">
+                {formatPrice(439.90, "BRL")}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowExitOffer(false)}
+              className="mt-5 w-full h-11 bg-foreground text-background text-[11px] font-medium uppercase tracking-[0.2em]"
+            >
+              Continuar minha compra
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowExitOffer(false)}
+              className="mt-3 text-xs text-muted-foreground underline underline-offset-4"
+            >
+              Quero sair mesmo assim
+            </button>
+
+          </div>
+        </div>
+      </div>
+    )}
+
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-12">
         <h1 className="font-display text-3xl md:text-4xl tracking-tight">Finalizar Compra</h1>
         <p className="text-sm text-muted-foreground mt-1">Preencha seus dados para concluir o pedido.</p>
