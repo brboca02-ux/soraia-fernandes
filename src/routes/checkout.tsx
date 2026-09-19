@@ -426,8 +426,8 @@ function CheckoutPage() {
 
   return ( 
       <div className="bg-background min-h-screen">
-{showExitOffer && (
-  <div
+      {showExitOffer && (
+      <div
     className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-3 sm:p-4 backdrop-blur-sm"
     role="dialog"
     aria-modal="true"
@@ -449,7 +449,7 @@ function CheckoutPage() {
       </button>
 
       {/* COLUNA ESQUERDA: IMAGEM */}
-      <div className="relative min-h-[220px] overflow-hidden bg-secondary md:min-h-[480px]">
+      <div className="relative min-h-[220px] overflow-hidden bg-secondary md:min-h-[500px]">
         {items[0]?.product?.node?.images?.edges?.[0]?.node?.url ? (
           <img
             src={items[0].product.node.images.edges[0].node.url}
@@ -457,7 +457,7 @@ function CheckoutPage() {
               items[0].product.node.title ||
               "Produto no carrinho"
             }
-            className="absolute inset-0 h-full w-full object-cover object-center"
+            className="absolute inset-0 h-full w-full object-cover"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -468,7 +468,7 @@ function CheckoutPage() {
         )}
 
         {/* Selo da oferta */}
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5 pt-16">
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-5 pt-16">
           <span className="inline-flex rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-black">
             Oferta especial
           </span>
@@ -476,16 +476,10 @@ function CheckoutPage() {
       </div>
 
       {/* COLUNA DIREITA: TODO O CONTEÚDO */}
-      <div className="flex min-w-0 flex-col justify-center p-5 sm:p-7 md:p-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-12">
-          <h1 className="font-display text-3xl md:text-4xl tracking-tight">Finalizar Compra</h1>
-          <p className="text-sm text-muted-foreground mt-1">Preencha seus dados para concluir o pedido.</p>
-
-
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
+      <div className="flex min-w-0 flex-col justify-center p-6 sm:p-8">
+        <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
           Oferta promocional
-        </p>
-
+          </p>
         <h2
           id="exit-offer-title"
           className="mt-3 font-display text-2xl leading-tight sm:text-3xl"
@@ -530,3 +524,4 @@ function CheckoutPage() {
       </div>
     </div>
   </div>
+      )}
