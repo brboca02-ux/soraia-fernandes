@@ -13,6 +13,7 @@ import { createOrder } from "@/lib/api/supaOrders";
 import { supabase } from "@/integrations/supabase/client";
 import { validateCoupon, calculateDiscount, type Coupon } from "@/lib/coupons";
 import { upsertAbandonedCart } from "@/lib/api/abandoned";
+import type { ReactNode } from "react";
 
 const DRAFT_KEY = "md_checkout_draft_v1";
 
@@ -79,7 +80,6 @@ function CheckoutPage() {
   const [city, setCity] = useState("");
   const [stateUf, setStateUf] = useState("");
   const [cepLoading, setCepLoading] = useState(false);
-
   const [quotes, setQuotes] = useState<ShippingQuote[]>([]);
   const [quotesLoading, setQuotesLoading] = useState(false);
   const [shippingCode, setShippingCode] = useState<string>("");
@@ -424,11 +424,8 @@ function CheckoutPage() {
     );
   }
 
-  return (
-    <div className="bg-background min-h-screen">
-      return (
-  <div className="bg-background min-h-screen">
-
+  return ( 
+      <div className="bg-background min-h-screen">
     {showExitOffer && (
       <div
         className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-4"
@@ -442,7 +439,6 @@ function CheckoutPage() {
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
               Oferta promocional
             </p>
-
             <h2
               id="exit-offer-title"
               className="font-display mt-2 text-2xl"
@@ -480,14 +476,12 @@ function CheckoutPage() {
             >
               Quero sair mesmo assim
             </button>
-
           </div>
         </div>
       </div>
     )}
 
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-12">
         <h1 className="font-display text-3xl md:text-4xl tracking-tight">Finalizar Compra</h1>
         <p className="text-sm text-muted-foreground mt-1">Preencha seus dados para concluir o pedido.</p>
 
