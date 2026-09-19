@@ -8,4 +8,4 @@ Disallow: /meus-pedidos
 Disallow: /pedido/
 Disallow: /pedidos/
 
-Sitemap: https://www.soraiafernandes.com.br/sitemap.xml
+Sitemap: https://soraiafernandesmodafesta.com.br/sitemap.xml

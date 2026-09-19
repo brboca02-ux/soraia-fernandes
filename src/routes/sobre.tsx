@@ -19,10 +19,10 @@ export const Route = createFileRoute("/sobre")({
         content:
           "Loja física e online especializada em vestidos de festa, atendimento humanizado e moda acessível.",
       },
-      { property: "og:url", content: "https://www.soraiafernandes.com.br/sobre" },
+      { property: "og:url", content: "https://soraiafernandesmodafesta.com.br/sobre" },
       { property: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://www.soraiafernandes.com.br/sobre" }],
+    links: [{ rel: "canonical", href: "https://soraiafernandesmodafesta.com.br/sobre" }],
   }),
   component: SobrePage,
 });

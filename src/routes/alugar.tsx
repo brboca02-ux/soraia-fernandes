@@ -19,9 +19,9 @@ export const Route = createFileRoute("/alugar")({
         property: "og:description",
         content: "Vestidos exclusivos para alugar. Casamentos, formaturas, festas e eventos especiais.",
       },
-      { property: "og:url", content: "https://www.jesstorejoinville.com.br/alugar" },
+      { property: "og:url", content: "https://soraiafernandesmodafesta.com.br/alugar" },
     ],
-    links: [{ rel: "canonical", href: "https://www.jesstorejoinville.com.br/alugar" }],
+    links: [{ rel: "canonical", href: "https://soraiafernandesmodafesta.com.br/alugar" }],
   }),
   component: AlugarPage,
 });
