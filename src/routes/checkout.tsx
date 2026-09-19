@@ -454,7 +454,7 @@ function CheckoutPage() {
           <img
             src={items[0].product.node.images.edges[0].node.url}
             alt={
-              items[0].product.node.title ||
+              items[0]?.product?.node?.title ||
               "Produto no carrinho"
             }
             className="absolute inset-0 h-full w-full object-cover"
