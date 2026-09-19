@@ -426,7 +426,7 @@ function CheckoutPage() {
 
   return ( 
       <div className="bg-background min-h-screen">
-      {showExitOffer && (
+        {showExitOffer && (
       <div
     className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-3 sm:p-4 backdrop-blur-sm"
     role="dialog"
@@ -479,7 +479,7 @@ function CheckoutPage() {
       <div className="flex min-w-0 flex-col justify-center p-6 sm:p-8">
         <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
           Oferta promocional
-          </p>
+        </div>
         <h2
           id="exit-offer-title"
           className="mt-3 font-display text-2xl leading-tight sm:text-3xl"
@@ -525,3 +525,5 @@ function CheckoutPage() {
     </div>
   </div>
       )}
+      </div>
+  )}
