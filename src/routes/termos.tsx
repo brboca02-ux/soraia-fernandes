@@ -8,11 +8,11 @@ export const Route = createFileRoute("/termos")({
       { name: "description", content: "Termos e condições de uso do site e da loja online Soraia Fernandes: pedidos, pagamentos, entregas e responsabilidades." },
       { property: "og:title", content: "Termos de Uso — Soraia Fernandes" },
       { property: "og:description", content: "Regras de uso, pedidos, pagamentos e entregas da Soraia Fernandes." },
-      { property: "og:url", content: "https://www.soraiafernandes.com.br/termos" },
+      { property: "og:url", content: "https://soraiafernandesmodafesta.com.br/termos" },
       { property: "og:type", content: "article" },
       { name: "robots", content: "index, follow" },
     ],
-    links: [{ rel: "canonical", href: "https://www.soraiafernandes.com.br/termos" }],
+    links: [{ rel: "canonical", href: "https://soraiafernandesmodafesta.com.br/termos" }],
   }),
   component: TermosPage,
 });

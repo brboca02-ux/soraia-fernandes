@@ -11,7 +11,7 @@ interface Props {
   className?: string;
 }
 
-const SITE = "https://www.soraiafernandes.com.br";
+const SITE = "https://soraiafernandesmodafesta.com.br";
 
 /**
  * Breadcrumb visual + JSON-LD (schema.org BreadcrumbList) em um único componente.

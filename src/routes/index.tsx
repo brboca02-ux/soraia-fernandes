@@ -25,11 +25,11 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Vestidos unicos para compra e aluguel. Casamentos, formaturas e eventos especiais em Joinville." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:url", content: "https://www.jesstorejoinville.com.br/" },
+      { property: "og:url", content: "https://soraiafernandesmodafesta.com.br/" },
       { property: "og:locale", content: "pt_BR" },
     ],
     links: [
-      { rel: "canonical", href: "https://www.jesstorejoinville.com.br/" },
+      { rel: "canonical", href: "https://soraiafernandesmodafesta.com.br/" },
       { rel: "preload", as: "image", href: homeBanner.url },
     ],
   }),

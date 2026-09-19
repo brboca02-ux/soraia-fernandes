@@ -60,7 +60,7 @@ export function buildAbandonmentWhatsAppLink(cart: AbandonedCart) {
   const items = cart.cart_data.items || [];
   const itemsList = items.map((i: any) => `- ${i.quantity}x ${i.product.node.title}`).join("\n");
   
-  const message = `Olá ${cart.customer_name || ""}! Notamos que você deixou alguns itens incríveis na sua sacola na Soraia Fernandes:\n\n${itemsList}\n\nAinda dá tempo de garantir as suas peças! Clique aqui para finalizar sua compra: https://www.soraiafernandes.com.br/checkout\n\nQualquer dúvida, estamos à disposição!`;
+  const message = `Olá ${cart.customer_name || ""}! Notamos que você deixou alguns itens incríveis na sua sacola na Soraia Fernandes:\n\n${itemsList}\n\nAinda dá tempo de garantir as suas peças! Clique aqui para finalizar sua compra: https://soraiafernandesmodafesta.com.br/checkout\n\nQualquer dúvida, estamos à disposição!`;
   
   const phone = (cart.customer_phone || "").replace(/\D/g, "");
   return `https://wa.me/55${phone}?text=${encodeURIComponent(message)}`;

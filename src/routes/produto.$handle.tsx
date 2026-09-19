@@ -13,18 +13,25 @@ import { RelatedProducts } from "@/components/RelatedProducts";
 
 export const Route = createFileRoute("/produto/$handle")({
   head: ({ params }) => {
-    const desc = `Compre ${params.handle} na Soraia Fernandes: vestidos de festa e moda feminina, envio para todo o Brasil e atendimento pelo WhatsApp.`;
+    const displayName = params.handle
+      .replace(/[-_]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/\b\p{Ll}/gu, (c) => c.toUpperCase());
+    const title = `${displayName} — Soraia Fernandes`;
+    const desc = `Compre ${displayName} na Soraia Fernandes: vestidos de festa e moda feminina, envio para todo o Brasil e atendimento pelo WhatsApp.`;
     return {
       meta: [
-        { title: `${params.handle} — Soraia Fernandes` },
+        { title },
         { name: "description", content: desc },
-        { property: "og:title", content: `${params.handle} — Soraia Fernandes` },
+        { property: "og:title", content: title },
         { property: "og:description", content: desc },
+
         { name: "twitter:description", content: desc },
-        { property: "og:url", content: `https://www.soraiafernandes.com.br/produto/${params.handle}` },
+        { property: "og:url", content: `https://soraiafernandesmodafesta.com.br/produto/${params.handle}` },
         { property: "og:type", content: "product" },
       ],
-      links: [{ rel: "canonical", href: `https://www.soraiafernandes.com.br/produto/${params.handle}` }],
+      links: [{ rel: "canonical", href: `https://soraiafernandesmodafesta.com.br/produto/${params.handle}` }],
     };
   },
   component: ProductPage,
@@ -223,7 +230,7 @@ function ProductPage() {
   ].filter(Boolean).join(" ");
   const waLink = buildWhatsAppLink(waMessage);
 
-  const canonicalUrl = `https://www.soraiafernandes.com.br/produto/${handle}`;
+  const canonicalUrl = `https://soraiafernandesmodafesta.com.br/produto/${handle}`;
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -242,7 +249,7 @@ function ProductPage() {
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
       url: canonicalUrl,
-      seller: { "@type": "Organization", name: "Soraia Fernandes", "@id": "https://www.soraiafernandes.com.br/#organization" },
+      seller: { "@type": "Organization", name: "Soraia Fernandes", "@id": "https://soraiafernandesmodafesta.com.br/#organization" },
     },
   };
 
@@ -250,8 +257,8 @@ function ProductPage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Início", item: "https://www.soraiafernandes.com.br/" },
-      { "@type": "ListItem", position: 2, name: "Coleção", item: "https://www.soraiafernandes.com.br/colecao" },
+      { "@type": "ListItem", position: 1, name: "Início", item: "https://soraiafernandesmodafesta.com.br/" },
+      { "@type": "ListItem", position: 2, name: "Coleção", item: "https://soraiafernandesmodafesta.com.br/colecao" },
       { "@type": "ListItem", position: 3, name: data.title, item: canonicalUrl },
     ],
   };
