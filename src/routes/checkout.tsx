@@ -535,3 +535,6 @@ function CheckoutPage() {
     </div>
   </div>
       )}  
+      </div>
+  );
+}
