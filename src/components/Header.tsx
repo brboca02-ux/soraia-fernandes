@@ -88,7 +88,7 @@ export function Header() {
         <div className="flex animate-marquee whitespace-nowrap gap-4 md:gap-0">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="flex items-center gap-6 md:gap-16 px-4 md:px-8">
-              <span className="text-[9px] md:text-xs font-semibold tracking-[0.2em] uppercase">Promoção aplicada automaticamente no Chechout para os 10 primeiros clientes</span>
+              <span className="text-[9px] md:text-xs font-semibold tracking-[0.2em] uppercase">Promoção aplicada automaticamente no Checkout</span>
               <span className="h-0.5 w-0.5 md:h-1 md:w-1 bg-gold rounded-full opacity-50" />
               <span className="text-[9px] md:text-xs font-semibold tracking-[0.2em] uppercase">Parcelamento em até 10x</span>
               <span className="h-0.5 w-0.5 md:h-1 md:w-1 bg-gold rounded-full opacity-50" />
