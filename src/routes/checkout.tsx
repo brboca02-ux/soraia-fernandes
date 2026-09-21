@@ -118,9 +118,18 @@ function CheckoutPage() {
   const itemsCount = items.reduce((s, i) => s + i.quantity, 0);
   const selectedQuote = quotes.find((q) => q.code === shippingCode);
   const shippingCost = selectedQuote?.price ?? 0;
-  const automaticDiscount = subtotal > 439.90 ? subtotal - 439.90 : 0;
+
+  const PROMO_PRICE_PER_ITEM = 439.90;
+  const automaticDiscount = useMemo(() => {
+    return items.reduce((acc, item) => {
+      const unitPrice = parseFloat(item.price.amount);
+      const itemDiscount = Math.max(0, unitPrice - PROMO_PRICE_PER_ITEM);
+      return acc + itemDiscount * item.quantity;
+    }, 0);
+  }, [items]);
+
   const couponDiscount = appliedCoupon
-    ? calculateDiscount(subtotal, appliedCoupon)
+    ? calculateDiscount(subtotal - automaticDiscount, appliedCoupon)
     : 0;
   const discount = automaticDiscount + couponDiscount;
   const total = subtotal + shippingCost - discount;
