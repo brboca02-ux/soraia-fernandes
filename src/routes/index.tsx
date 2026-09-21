@@ -48,13 +48,13 @@ function Index() {
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
           <div>
             <span className="inline-block text-xs uppercase tracking-[0.2em] text-[#d4af37] font-semibold mb-2">
-              ✨ Novidade Exclusiva
+              ✨  LANÇAMENTO EXCLUSIVO ✨
             </span>
             <h2 className="text-2xl lg:text-3xl font-serif text-[#f8f5f0] tracking-wide">
-              Promoção Especial de Lançamento
+              Lançamento da Loja: Peças Únicas por R$ 439,90
             </h2>
             <p className="text-sm text-neutral-300 mt-1 max-w-xl">
-              Celebre a estreia da nossa nova loja online com condições imperdíveis em peças selecionadas por tempo limitado.
+              Celebre a estreia da nossa nova loja online e aproveite o preço especial de lançamento. Peças únicas, exclusivas e disponíveis por tempo limitado.
             </p>
           </div>
 
@@ -62,7 +62,7 @@ function Index() {
             to="/colecao"
             className="shrink-0 px-8 py-3 rounded-full bg-[#d4af37] text-neutral-950 font-medium text-sm tracking-wider uppercase hover:bg-[#e5c158] transition shadow-lg hover:shadow-[#d4af37]/20"
           >
-            Aproveitar Promoção
+             GARANTIR MINHA PEÇA
           </Link>
         </div>
       </section>
