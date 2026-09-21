@@ -535,6 +535,260 @@ function CheckoutPage() {
     </div>
   </div>
       )}  
+
+        <div className="max-w-6xl mx-auto px-4 py-10">
+          <h1 className="font-display text-3xl mb-2">Finalizar compra</h1>
+          <p className="text-sm text-muted-foreground mb-8">
+            Preencha seus dados para concluir o pedido com segurança.
+          </p>
+
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="space-y-8">
+              <Section icon={<User className="h-4 w-4" />} title="Seus dados" done={stepIdentDone}>
+                <Row>
+                  <Field label="Nome completo *">
+                    <input className={inp} value={name} onChange={(e) => setName(e.target.value)} placeholder="Seu nome" />
+                  </Field>
+                  <Field label="E-mail *">
+                    <input className={inp} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="voce@email.com" />
+                  </Field>
+                </Row>
+                <Row>
+                  <Field label="Telefone / WhatsApp">
+                    <input className={inp} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(47) 90000-0000" />
+                  </Field>
+                  <Field label="CPF">
+                    <input className={inp} value={cpf} onChange={(e) => setCpf(e.target.value)} placeholder="000.000.000-00" />
+                  </Field>
+                </Row>
+              </Section>
+
+              <Section icon={<MapPin className="h-4 w-4" />} title="Endereço de entrega" done={stepAddrDone}>
+                <Row>
+                  <Field label="CEP *">
+                    <div className="relative">
+                      <input
+                        className={inp}
+                        value={formatCep(cep)}
+                        onChange={(e) => setCep(onlyDigits(e.target.value).slice(0, 8))}
+                        onBlur={onCepBlur}
+                        placeholder="00000-000"
+                        inputMode="numeric"
+                      />
+                      {cepLoading && <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />}
+                    </div>
+                  </Field>
+                  <Field label="Rua *">
+                    <input className={inp} value={street} onChange={(e) => setStreet(e.target.value)} placeholder="Rua / Avenida" />
+                  </Field>
+                </Row>
+                <Row>
+                  <Field label="Número *">
+                    <input className={inp} value={number} onChange={(e) => setNumber(e.target.value)} placeholder="123" />
+                  </Field>
+                  <Field label="Complemento">
+                    <input className={inp} value={complement} onChange={(e) => setComplement(e.target.value)} placeholder="Apto, bloco…" />
+                  </Field>
+                </Row>
+                <Row>
+                  <Field label="Bairro *">
+                    <input className={inp} value={district} onChange={(e) => setDistrict(e.target.value)} />
+                  </Field>
+                  <Field label="Cidade *">
+                    <input className={inp} value={city} onChange={(e) => setCity(e.target.value)} />
+                  </Field>
+                </Row>
+                <Field label="Estado (UF) *">
+                  <input className={`${inp} max-w-[120px]`} value={stateUf} onChange={(e) => setStateUf(e.target.value.toUpperCase().slice(0, 2))} />
+                </Field>
+              </Section>
+
+              <Section icon={<Truck className="h-4 w-4" />} title="Frete" done={stepShipDone}>
+                {quotesLoading ? (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" /> Calculando frete…
+                  </div>
+                ) : quotes.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Informe o CEP para ver as opções de entrega.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {quotes.map((q) => (
+                      <label
+                        key={q.code}
+                        className={`flex cursor-pointer items-center justify-between rounded-lg border p-4 transition ${
+                          shippingCode === q.code ? "border-foreground" : "border-border hover:border-foreground/40"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="radio"
+                            name="shipping"
+                            checked={shippingCode === q.code}
+                            onChange={() => setShippingCode(q.code)}
+                            className="h-4 w-4"
+                          />
+                          <div>
+                            <div className="text-sm font-medium">{q.name}</div>
+                            <div className="text-xs text-muted-foreground">
+                              Chega até {estimatedDeliveryLabel(q.days)}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-sm font-medium">
+                          {q.price > 0 ? formatPrice(q.price, "BRL") : "Grátis"}
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </Section>
+
+              <Section icon={<CreditCard className="h-4 w-4" />} title="Pagamento" done={false}>
+                <div className="rounded-lg border border-border p-4">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <Lock className="h-4 w-4" /> Pague com InfinitePay
+                  </div>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Você será levado para o ambiente seguro da InfinitePay para pagar com Pix ou cartão de crédito.
+                  </p>
+                </div>
+              </Section>
+            </div>
+
+            <aside className="lg:sticky lg:top-24 h-fit rounded-xl border border-border p-5">
+              <h2 className="font-display text-xl">Resumo do pedido</h2>
+
+              <div className="mt-4 space-y-3">
+                {items.map((i, idx) => (
+                  <div key={`${i.variantId}-${idx}`} className="flex gap-3">
+                    <div className="h-16 w-14 shrink-0 overflow-hidden rounded bg-secondary">
+                      {i.product?.node?.images?.edges?.[0]?.node?.url && (
+                        <img
+                          src={i.product.node.images.edges[0].node.url}
+                          alt={i.product?.node?.title || "Produto"}
+                          className="h-full w-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm">{i.product?.node?.title || "Produto"}</div>
+                      <div className="text-xs text-muted-foreground">Qtd: {i.quantity}</div>
+                    </div>
+                    <div className="text-sm">{formatPrice(parseFloat(i.price.amount) * i.quantity, "BRL")}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 border-t border-border pt-4">
+                <div className="flex gap-2">
+                  <input
+                    className={inp}
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    placeholder="Cupom de desconto"
+                    disabled={!!appliedCoupon}
+                  />
+                  {appliedCoupon ? (
+                    <button type="button" onClick={removeCoupon} className="px-3 text-xs uppercase tracking-wider">
+                      Remover
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleApplyCoupon}
+                      disabled={validatingCoupon}
+                      className="flex items-center gap-1 bg-secondary px-4 text-[11px] uppercase tracking-[0.15em]"
+                    >
+                      {validatingCoupon ? <Loader2 className="h-3 w-3 animate-spin" /> : <Ticket className="h-3 w-3" />}
+                      Aplicar
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-5 space-y-2 border-t border-border pt-4 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span>{formatPrice(subtotal, "BRL")}</span>
+                </div>
+                {discount > 0 && (
+                  <div className="flex justify-between text-primary">
+                    <span>Descontos</span>
+                    <span>- {formatPrice(discount, "BRL")}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Frete</span>
+                  <span>{selectedQuote ? (shippingCost > 0 ? formatPrice(shippingCost, "BRL") : "Grátis") : "—"}</span>
+                </div>
+                <div className="flex justify-between border-t border-border pt-3 text-base font-medium">
+                  <span>Total</span>
+                  <span>{formatPrice(total, "BRL")}</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={!canSubmit}
+                className="mt-5 flex min-h-12 w-full items-center justify-center gap-2 bg-foreground px-4 py-3 text-[11px] uppercase tracking-[0.2em] text-background transition disabled:opacity-40"
+              >
+                {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
+                {submitting ? "Processando…" : "Finalizar compra"}
+              </button>
+
+              {stageMessage && (
+                <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                  <ChevronRight className="h-3 w-3" /> {stageMessage}
+                </p>
+              )}
+
+              <p className="mt-3 text-center text-[11px] text-muted-foreground">
+                Compra 100% segura • Pagamento processado pela InfinitePay
+              </p>
+            </aside>
+          </div>
+        </div>
       </div>
   );
 }
+
+const inp =
+  "w-full rounded-md border border-border bg-background px-3 py-3 text-sm outline-none transition focus:border-foreground";
+
+function Row({ children }: { children: ReactNode }) {
+  return <div className="grid gap-4 sm:grid-cols-2">{children}</div>;
+}
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-[11px] uppercase tracking-[0.15em] text-muted-foreground">{label}</span>
+      {children}
+    </label>
+  );
+}
+
+function Section({
+  icon,
+  title,
+  done,
+  children,
+}: {
+  icon: ReactNode;
+  title: string;
+  done: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-xl border border-border p-5">
+      <div className="mb-4 flex items-center gap-2">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary">{icon}</span>
+        <h2 className="text-sm font-medium uppercase tracking-[0.15em]">{title}</h2>
+        {done && <Check className="h-4 w-4 text-primary" />}
+      </div>
+      <div className="space-y-4">{children}</div>
+    </section>
+  );
+}
+>>>>>>> 72a976af37da1e81fb7e97c66895be6f14d3a28d
