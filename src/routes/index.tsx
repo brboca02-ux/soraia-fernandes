@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   HomeHero,
   TrustStrip,
@@ -12,7 +12,7 @@ import {
 import { ShowcaseCarousel } from "@/components/ShowcaseCarousel";
 import { NewsletterSection } from "@/components/NewsletterCapture";
 import homeBanner from "@/assets/banner-home-soraia.jpeg.asset.json";
-import { createFileRoute, Link } from "@tanstack/react-router";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
