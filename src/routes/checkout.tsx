@@ -11,9 +11,11 @@ import { payment } from "@/lib/integrations/payment";
 import { lookupCep, formatCep } from "@/lib/integrations/viacep";
 import { createOrder } from "@/lib/api/supaOrders";
 import { supabase } from "@/integrations/supabase/client";
-import { validateCoupon, calculateDiscount, type Coupon } from "@/lib/coupons";
+import { validateCoupon, type Coupon } from "@/lib/coupons";
+import { quotePromotions, cartProductId, type PromotionQuote } from "@/lib/promotions";
 import { upsertAbandonedCart } from "@/lib/api/abandoned";
 import type { ReactNode } from "react";
+import { Button } from "@/components/ui/button";
 
 const DRAFT_KEY = "md_checkout_draft_v1";
 
@@ -36,6 +38,11 @@ export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
       { title: "Finalizar Compra — Soraia Fernandes" },
+      { name: "description", content: "Confira os produtos, promoções aplicáveis e finalize sua compra na Soraia Fernandes." },
+      { property: "og:title", content: "Finalizar Compra — Soraia Fernandes" },
+      { property: "og:description", content: "Confira os produtos, promoções aplicáveis e finalize sua compra na Soraia Fernandes." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
@@ -89,6 +96,9 @@ function CheckoutPage() {
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [validatingCoupon, setValidatingCoupon] = useState(false);
+  const [promotionQuote, setPromotionQuote] = useState<PromotionQuote | null>(null);
+  const [quoteLoading, setQuoteLoading] = useState(true);
+  const [quoteError, setQuoteError] = useState(false);
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -111,6 +121,17 @@ function CheckoutPage() {
     setCouponCode("");
   };
 
+  useEffect(() => {
+    if (!items.length) { setQuoteLoading(false); setPromotionQuote(null); return; }
+    let cancelled = false;
+    setQuoteLoading(true);
+    setQuoteError(false);
+    quotePromotions(items, appliedCoupon?.code).then((quote) => {
+      if (!cancelled) { setPromotionQuote(quote); setQuoteLoading(false); }
+    }).catch(() => { if (!cancelled) { setPromotionQuote(null); setQuoteError(true); setQuoteLoading(false); } });
+    return () => { cancelled = true; };
+  }, [items, appliedCoupon]);
+
   const subtotal = useMemo(
     () => items.reduce((s, i) => s + parseFloat(i.price.amount) * i.quantity, 0),
     [items]
@@ -119,20 +140,9 @@ function CheckoutPage() {
   const selectedQuote = quotes.find((q) => q.code === shippingCode);
   const shippingCost = selectedQuote?.price ?? 0;
 
-  const PROMO_PRICE_PER_ITEM = 439.90;
-  const automaticDiscount = useMemo(() => {
-    return items.reduce((acc, item) => {
-      const unitPrice = parseFloat(item.price.amount);
-      const itemDiscount = Math.max(0, unitPrice - PROMO_PRICE_PER_ITEM);
-      return acc + itemDiscount * item.quantity;
-    }, 0);
-  }, [items]);
-
-  const couponDiscount = appliedCoupon
-    ? calculateDiscount(subtotal - automaticDiscount, appliedCoupon)
-    : 0;
-  const discount = automaticDiscount + couponDiscount;
-  const total = subtotal + shippingCost - discount;
+  const displaySubtotal = promotionQuote?.subtotal ?? subtotal;
+  const discount = promotionQuote?.discount ?? 0;
+  const total = displaySubtotal + shippingCost - discount;
 
   useEffect(() => {
     if (user?.email && !email) setEmail(user.email);
@@ -277,6 +287,8 @@ function CheckoutPage() {
     city &&
     stateUf &&
     shippingCode &&
+    !quoteLoading &&
+    !quoteError &&
     !submitting;
 
   const handleSubmit = async () => {
@@ -303,6 +315,12 @@ function CheckoutPage() {
       return;
     }
     const v = parsed.data;
+    try {
+      await quotePromotions(items, appliedCoupon?.code);
+    } catch {
+      toast.error("Não foi possível confirmar os preços. Atualize a página e tente novamente.");
+      return;
+    }
     setSubmitting(true);
     setSubmitStage("creating");
 
@@ -330,7 +348,7 @@ function CheckoutPage() {
           cleanId = cleanId.replace(/^mock:/, "");
 
           return {
-            product_id: cleanId || null,
+            product_id: cartProductId(i) || cleanId || null,
             product_name: i.product?.node?.title || "Produto",
             variant_size: i.selectedOptions?.find((o) => /tam|size/i.test(o.name))?.value || undefined,
             variant_color: i.selectedOptions?.find((o) => /cor|color/i.test(o.name))?.value || undefined,
@@ -436,7 +454,7 @@ function CheckoutPage() {
   return ( 
       <div className="bg-background min-h-screen">
          {/* 1. MODAL DE OFERTA DE SAÍDA */}
-        {showExitOffer && (
+        {showExitOffer && promotionQuote && promotionQuote.discount > 0 && (
       <div
     className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-3 sm:p-4 backdrop-blur-sm"
     role="dialog"
@@ -498,18 +516,17 @@ function CheckoutPage() {
         </h2>
 
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Seu produto está com uma condição promocional
-          especial. Aproveite agora antes de sair desta página.
+          {promotionQuote.promotion_name || "Condição especial"} está disponível para os produtos participantes.
         </p>
 
         {/* Preço */}
         <div className="mt-5 rounded-lg bg-secondary/50 p-4">
           <p className="text-xs text-muted-foreground">
-            Preço promocional
+            Desconto aplicado ao pedido
           </p>
 
           <p className="mt-1 text-3xl font-semibold">
-            {formatPrice(439.90, "BRL")}
+            {formatPrice(promotionQuote.discount, "BRL")}
           </p>
         </div>
 
@@ -709,11 +726,11 @@ function CheckoutPage() {
               <div className="mt-5 space-y-2 border-t border-border pt-4 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span>{formatPrice(subtotal, "BRL")}</span>
+                  <span>{formatPrice(displaySubtotal, "BRL")}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-primary">
-                    <span>Descontos</span>
+                    <span>{promotionQuote?.promotion_name || "Descontos"}</span>
                     <span>- {formatPrice(discount, "BRL")}</span>
                   </div>
                 )}
@@ -721,13 +738,15 @@ function CheckoutPage() {
                   <span className="text-muted-foreground">Frete</span>
                   <span>{selectedQuote ? (shippingCost > 0 ? formatPrice(shippingCost, "BRL") : "Grátis") : "—"}</span>
                 </div>
+                {quoteLoading && <p className="text-xs text-muted-foreground">Conferindo preços e promoções…</p>}
+                {quoteError && <p role="alert" className="text-xs text-destructive">Não foi possível conferir os preços. Atualize a página antes de comprar.</p>}
                 <div className="flex justify-between border-t border-border pt-3 text-base font-medium">
                   <span>Total</span>
                   <span>{formatPrice(total, "BRL")}</span>
                 </div>
               </div>
 
-              <button
+              <Button
                 type="button"
                 onClick={handleSubmit}
                 disabled={!canSubmit}
@@ -735,7 +754,7 @@ function CheckoutPage() {
               >
                 {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
                 {submitting ? "Processando…" : "Finalizar compra"}
-              </button>
+              </Button>
 
               {stageMessage && (
                 <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">

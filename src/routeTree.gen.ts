@@ -34,6 +34,7 @@ import { Route as ProdutoHandleRouteImport } from './routes/produto.$handle'
 import { Route as ProdutosIndexRouteImport } from './routes/produtos.index'
 import { Route as ProdutosNovoRouteImport } from './routes/produtos.novo'
 import { Route as ProdutosRapidoRouteImport } from './routes/produtos.rapido'
+import { Route as PromocoesIndexRouteImport } from './routes/promocoes.index'
 import { Route as ApiPublicPaymentWebhookRouteImport } from './routes/api/public/payment-webhook'
 import { Route as ApiPublicReconcilePaymentsRouteImport } from './routes/api/public/reconcile-payments'
 import { Route as CategoriasIdEditarRouteImport } from './routes/categorias.$id.editar'
@@ -168,6 +169,11 @@ const ProdutosRapidoRoute = ProdutosRapidoRouteImport.update({
   path: '/produtos/rapido',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PromocoesIndexRoute = PromocoesIndexRouteImport.update({
+  id: '/promocoes/',
+  path: '/promocoes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentWebhookRoute = ApiPublicPaymentWebhookRouteImport.update({
   id: '/api/public/payment-webhook',
   path: '/api/public/payment-webhook',
@@ -235,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/marketing/': typeof MarketingIndexRoute
   '/pedidos/': typeof PedidosIndexRoute
   '/produtos/': typeof ProdutosIndexRoute
+  '/promocoes/': typeof PromocoesIndexRoute
   '/api/public/payment-webhook': typeof ApiPublicPaymentWebhookRoute
   '/api/public/reconcile-payments': typeof ApiPublicReconcilePaymentsRoute
   '/categorias/$id/editar': typeof CategoriasIdEditarRoute
@@ -269,6 +276,7 @@ export interface FileRoutesByTo {
   '/marketing': typeof MarketingIndexRoute
   '/pedidos': typeof PedidosIndexRoute
   '/produtos': typeof ProdutosIndexRoute
+  '/promocoes': typeof PromocoesIndexRoute
   '/api/public/payment-webhook': typeof ApiPublicPaymentWebhookRoute
   '/api/public/reconcile-payments': typeof ApiPublicReconcilePaymentsRoute
   '/categorias/$id/editar': typeof CategoriasIdEditarRoute
@@ -305,6 +313,7 @@ export interface FileRoutesById {
   '/marketing/': typeof MarketingIndexRoute
   '/pedidos/': typeof PedidosIndexRoute
   '/produtos/': typeof ProdutosIndexRoute
+  '/promocoes/': typeof PromocoesIndexRoute
   '/api/public/payment-webhook': typeof ApiPublicPaymentWebhookRoute
   '/api/public/reconcile-payments': typeof ApiPublicReconcilePaymentsRoute
   '/categorias/$id/editar': typeof CategoriasIdEditarRoute
@@ -341,6 +350,7 @@ export interface FileRouteTypes {
     | '/marketing/'
     | '/pedidos/'
     | '/produtos/'
+    | '/promocoes/'
     | '/api/public/payment-webhook'
     | '/api/public/reconcile-payments'
     | '/categorias/$id/editar'
@@ -375,6 +385,7 @@ export interface FileRouteTypes {
     | '/marketing'
     | '/pedidos'
     | '/produtos'
+    | '/promocoes'
     | '/api/public/payment-webhook'
     | '/api/public/reconcile-payments'
     | '/categorias/$id/editar'
@@ -410,6 +421,7 @@ export interface FileRouteTypes {
     | '/marketing/'
     | '/pedidos/'
     | '/produtos/'
+    | '/promocoes/'
     | '/api/public/payment-webhook'
     | '/api/public/reconcile-payments'
     | '/categorias/$id/editar'
@@ -445,6 +457,7 @@ export interface RootRouteChildren {
   MarketingIndexRoute: typeof MarketingIndexRoute
   PedidosIndexRoute: typeof PedidosIndexRoute
   ProdutosIndexRoute: typeof ProdutosIndexRoute
+  PromocoesIndexRoute: typeof PromocoesIndexRoute
   ApiPublicPaymentWebhookRoute: typeof ApiPublicPaymentWebhookRoute
   ApiPublicReconcilePaymentsRoute: typeof ApiPublicReconcilePaymentsRoute
   CategoriasIdEditarRoute: typeof CategoriasIdEditarRoute
@@ -632,6 +645,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProdutosRapidoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/promocoes/': {
+      id: '/promocoes/'
+      path: '/promocoes'
+      fullPath: '/promocoes/'
+      preLoaderRoute: typeof PromocoesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payment-webhook': {
       id: '/api/public/payment-webhook'
       path: '/api/public/payment-webhook'
@@ -727,6 +747,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketingIndexRoute: MarketingIndexRoute,
   PedidosIndexRoute: PedidosIndexRoute,
   ProdutosIndexRoute: ProdutosIndexRoute,
+  PromocoesIndexRoute: PromocoesIndexRoute,
   ApiPublicPaymentWebhookRoute: ApiPublicPaymentWebhookRoute,
   ApiPublicReconcilePaymentsRoute: ApiPublicReconcilePaymentsRoute,
   CategoriasIdEditarRoute: CategoriasIdEditarRoute,
