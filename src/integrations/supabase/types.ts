@@ -541,6 +541,48 @@ export type Database = {
         }
         Relationships: []
       }
+      promotions: {
+        Row: {
+          active: boolean
+          created_at: string
+          ends_at: string | null
+          id: string
+          minimum_subtotal: number
+          mode: string
+          name: string
+          product_ids: string[]
+          starts_at: string | null
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          minimum_subtotal?: number
+          mode: string
+          name: string
+          product_ids?: string[]
+          starts_at?: string | null
+          updated_at?: string
+          value: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          minimum_subtotal?: number
+          mode?: string
+          name?: string
+          product_ids?: string[]
+          starts_at?: string | null
+          updated_at?: string
+          value?: number
+        }
+        Relationships: []
+      }
       site_config: {
         Row: {
           created_at: string
@@ -674,6 +716,11 @@ export type Database = {
         Returns: boolean
       }
       place_order: { Args: { payload: Json }; Returns: Json }
+      place_order_promoted: { Args: { payload: Json }; Returns: Json }
+      quote_promotions: {
+        Args: { p_coupon_code?: string; p_items: Json }
+        Returns: Json
+      }
       set_order_fulfillment: {
         Args: { p_order_id: string; p_stage: string }
         Returns: undefined
