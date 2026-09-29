@@ -1,0 +1,1 @@
+Use `ProductRegistration` for the simple manual clothing creation flow and retain `ProductForm` for the existing advanced editing flow, so everyday product entry stays focused without removing advanced variant controls.

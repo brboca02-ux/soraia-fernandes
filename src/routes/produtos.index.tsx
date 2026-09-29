@@ -61,7 +61,7 @@ function ProductsListPage() {
               to="/produtos/novo"
               className="inline-flex items-center gap-2 rounded-lg bg-foreground text-background px-4 py-2.5 text-sm font-medium hover:bg-foreground/85"
             >
-              <Plus className="h-4 w-4" /> Novo Produto
+              <Plus className="h-4 w-4" /> Cadastrar roupa
             </Link>
           </div>
         </div>
