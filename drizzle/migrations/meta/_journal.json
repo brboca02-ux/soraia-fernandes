@@ -8,6 +8,13 @@
       "when": 1790592312358,
       "tag": "0000_selective_promotions_checkout",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790782613594,
+      "tag": "0001_product_fixed_price_promotion_eligibility",
+      "breakpoints": true
     }
   ]
 }
