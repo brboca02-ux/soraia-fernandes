@@ -484,6 +484,7 @@ export type Database = {
           minimum_stock: number
           name: string
           price: number
+          promotion_eligible: boolean
           reserved_stock: number
           sale_price: number | null
           showcase: boolean
@@ -506,6 +507,7 @@ export type Database = {
           minimum_stock?: number
           name: string
           price?: number
+          promotion_eligible?: boolean
           reserved_stock?: number
           sale_price?: number | null
           showcase?: boolean
@@ -528,6 +530,7 @@ export type Database = {
           minimum_stock?: number
           name?: string
           price?: number
+          promotion_eligible?: boolean
           reserved_stock?: number
           sale_price?: number | null
           showcase?: boolean
