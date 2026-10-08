@@ -328,6 +328,9 @@ export type Database = {
           payment_method: string | null
           payment_provider: string | null
           payment_url: string | null
+          promotion_counted: boolean
+          promotion_id: string | null
+          promotion_snapshot: Json | null
           shipping_cost: number
           shipping_method: string | null
           status: string
@@ -351,6 +354,9 @@ export type Database = {
           payment_method?: string | null
           payment_provider?: string | null
           payment_url?: string | null
+          promotion_counted?: boolean
+          promotion_id?: string | null
+          promotion_snapshot?: Json | null
           shipping_cost?: number
           shipping_method?: string | null
           status?: string
@@ -374,6 +380,9 @@ export type Database = {
           payment_method?: string | null
           payment_provider?: string | null
           payment_url?: string | null
+          promotion_counted?: boolean
+          promotion_id?: string | null
+          promotion_snapshot?: Json | null
           shipping_cost?: number
           shipping_method?: string | null
           status?: string
@@ -395,6 +404,13 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_promotion_id_fkey"
+            columns: ["promotion_id"]
+            isOneToOne: false
+            referencedRelation: "promotions"
             referencedColumns: ["id"]
           },
         ]
@@ -556,6 +572,8 @@ export type Database = {
           product_ids: string[]
           starts_at: string | null
           updated_at: string
+          usage_count: number
+          usage_limit: number | null
           value: number
         }
         Insert: {
@@ -569,6 +587,8 @@ export type Database = {
           product_ids?: string[]
           starts_at?: string | null
           updated_at?: string
+          usage_count?: number
+          usage_limit?: number | null
           value: number
         }
         Update: {
@@ -582,6 +602,8 @@ export type Database = {
           product_ids?: string[]
           starts_at?: string | null
           updated_at?: string
+          usage_count?: number
+          usage_limit?: number | null
           value?: number
         }
         Relationships: []
@@ -707,6 +729,8 @@ export type Database = {
         }
         Returns: undefined
       }
+      campaign_admin_stats: { Args: never; Returns: Json }
+      campaign_available: { Args: { p_id: string }; Returns: boolean }
       get_order_public: {
         Args: { p_email: string; p_order_number: string }
         Returns: Json
@@ -726,6 +750,10 @@ export type Database = {
       }
       set_order_fulfillment: {
         Args: { p_order_id: string; p_stage: string }
+        Returns: undefined
+      }
+      set_product_campaigns: {
+        Args: { p_campaigns: string[]; p_product: string }
         Returns: undefined
       }
       upsert_abandoned_cart: { Args: { payload: Json }; Returns: string }
