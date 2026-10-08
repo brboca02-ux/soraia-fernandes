@@ -15,6 +15,13 @@
       "when": 1790782613594,
       "tag": "0001_product_fixed_price_promotion_eligibility",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791481690746,
+      "tag": "0002_editable_campaigns_paid_capacity",
+      "breakpoints": true
     }
   ]
 }
