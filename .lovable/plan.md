@@ -1,23 +1,24 @@
+# Fazer o "Participa da promoção" valer de verdade no checkout
 
+## O que está acontecendo
+Existem hoje duas listas separadas:
+- a caixa **"Participa da promoção"** na peça;
+- a lista de produtos dentro da campanha **"Vestidos selecionados"** (R$ 439,90, 10 vagas), que hoje tem 31 peças.
 
+O checkout só olha a **lista da campanha**. Por isso, desmarcar a caixa na peça não tira a peça do desconto. O vestido "Capa Lateral e Flor Aplicada" do print está nas duas listas, então recebe o desconto.
 
-### 1. Checkout — etapa de pagamento simplificada (segue seu código)
-- Remover a escolha manual Pix / Cartão / Boleto: a InfinitePay oferece essas opções na própria tela dela.
-- Nova seção "Pagamento seguro" (conforme seu layout): cartão "Pague com InfinitePay — Oficial", selo "Ambiente Seguro" (cadeado), texto explicando o redirecionamento e os meios aceitos: Pix (aprovação instantânea), Cartão em até 12x, InfinitePay Checkout.
-- Gravar o pedido com `payment_method: "infinitepay"`.
-- Mensagens de progresso: "Gerando link de pagamento InfinitePay…" e "Redirecionando para pagamento seguro…".
-- Fluxo mantido: cria pedido → servidor gera link → redireciona para `checkout.infinitepay.io/soraia-cristina-4n6`.
+## O que vou fazer
+1. **Uma única fonte:** ao salvar a peça, a caixa "Participa da promoção" passa a incluir ou retirar a peça da campanha ativa. Ela abre marcada só se a peça estiver mesmo na campanha.
+2. **Cadastro de peça nova:** mesma caixa, desmarcada por padrão.
+3. **Lista de produtos do painel:** etiqueta "Participa" ou "Não participa", lida da campanha.
+4. **Tela de Promoções:** continua sendo possível marcar e desmarcar as peças ali. As duas telas vão mostrar sempre a mesma coisa.
+5. **Não mexo** no valor, nas vagas nem no cálculo do checkout. Eles já seguem a campanha.
 
-### 2. Página de sucesso — confirmar o retorno da InfinitePay
-- Ao voltar, a URL traz `transaction_nsu` e `slug`: a página chama a verificação no servidor e marca o pedido como pago automaticamente.
-- Trocar textos/botão "Mercado Pago" por "InfinitePay".
-- Manter atualização em tempo real do status como fallback.
-
-### 3. Verificação
-- Typecheck + build sem erros.
-- Teste no navegador: sacola → checkout → link gerado aponta para o handle `soraia-cristina-4n6` com o total correto; página de sucesso processa o retorno.
+## Para você conferir depois
+Desmarque a caixa no vestido do print, salve e abra o checkout de novo. O total deve voltar para R$ 800,00.
 
 ## Detalhes técnicos
-- `src/routes/checkout.tsx`: remover estado `paymentMethod` e os 3 botões; inserir a seção "Pagamento seguro"; `payment_method: "infinitepay"` no `createOrder`; ajustar o payload de `payment.createPayment` para a assinatura atual do adapter (sem `method`/`siteUrl` extras — o adapter já resolve a URL do site).
-- `src/routes/pedido.sucesso.$numero.tsx`: `validateSearch` com `transaction_nsu` e `slug`; chamar `checkInfinitePayPayment` quando presentes; textos atualizados.
-- Nenhuma chave secreta necessária: checkout por link usa só o handle público; confirmação via endpoint público `payment_check` com validação de valor contra o banco.
+- `ProductForm` e `ProductRegistration`: depois de salvar, chamam `set_product_campaigns(product_id, ativo ? [campanhaAtiva] : [])`. O estado inicial vem de `promotions.product_ids`.
+- `supaProducts`: `in_promotion` passa a ser calculado a partir da campanha. `promotion_eligible` é mantido igual só por compatibilidade.
+- `produtos.index.tsx`: etiqueta que cruza o produto com o `product_ids` da campanha ativa.
+- Sem migração no banco.
