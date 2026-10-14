@@ -1,6 +1,6 @@
 import { AdminShell } from "@/components/AdminShell";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Pencil, Copy, Archive, Plus, Search, ImageOff, Sparkles, Trash2, Star, ArchiveRestore } from "lucide-react";
 import { useProductsStore, CATEGORIES, effectiveStock, type ProductStatus } from "@/stores/productsStore";
