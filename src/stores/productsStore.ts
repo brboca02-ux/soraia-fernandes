@@ -33,12 +33,14 @@ export interface Product {
   price: number; sale_price: number | null;
   stock: number; reserved_stock: number; minimum_stock: number;
   track_stock: boolean; weight: number;
+  in_promotion?: boolean;
   status: ProductStatus;
   showcase: boolean;
   meta_title: string; meta_description: string;
   images: ProductImage[]; variants: ProductVariant[];
   created_at: string;
 }
+
 
 export const slugify = (s: string) =>
   s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -167,7 +169,7 @@ export const emptyProduct = (): Omit<Product, "id" | "store_id" | "created_at"> 
   name: "", slug: "", description: "", category_id: "feminino", brand: "Soraia Fernandes",
   sku: "", price: 0, sale_price: null, stock: 0, reserved_stock: 0,
   minimum_stock: 5, track_stock: true, weight: 0, status: "ativo",
-  showcase: false,
+  showcase: false, in_promotion: false,
   meta_title: "", meta_description: "", images: [], variants: [],
 });
 

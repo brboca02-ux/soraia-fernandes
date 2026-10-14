@@ -122,6 +122,11 @@ function CheckoutPage() {
   const PROMO_PRICE_PER_ITEM = 439.90;
   const automaticDiscount = useMemo(() => {
     return items.reduce((acc, item) => {
+    const isPromo = (item as any) .in_promotion ?? (item as any).product?.in_promotion;
+    if (!isPromo) {
+      return acc;
+    }
+
       const unitPrice = parseFloat(item.price.amount);
       const itemDiscount = Math.max(0, unitPrice - PROMO_PRICE_PER_ITEM);
       return acc + itemDiscount * item.quantity;

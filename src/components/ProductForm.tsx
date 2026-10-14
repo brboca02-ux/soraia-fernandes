@@ -30,6 +30,7 @@ export function ProductForm({ productId }: { productId?: string }) {
           track_stock: existing.track_stock ?? true,
           weight: existing.weight, status: existing.status,
           showcase: existing.showcase ?? false,
+              in_promotion: existing.in_promotion ?? false,
           meta_title: existing.meta_title, meta_description: existing.meta_description,
           images: existing.images, variants: existing.variants,
         }
@@ -428,6 +429,17 @@ export function ProductForm({ productId }: { productId?: string }) {
                   <input type="checkbox" checked={data.showcase}
                     onChange={(e) => set("showcase", e.target.checked)} className="h-4 w-4" />
                   <span className="text-sm">Mostrar na vitrine</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={data.in_promotion}
+                    onChange={(e) => setData((prev) => ({ ...prev, in_promotion: e.target.checked }))}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    Participa da promoção (R$ 439,90 no checkout)
+                  </span>
                 </label>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
