@@ -21,6 +21,7 @@ type DbProduct = {
   weight: number | string;
   status: ProductStatus;
   showcase: boolean;
+  promotion_eligible?: boolean;
   meta_title: string | null;
   meta_description: string | null;
   created_at: string;
@@ -57,6 +58,7 @@ function rowToProduct(r: DbProduct): Product {
     weight: num(r.weight),
     status: r.status,
     showcase: r.showcase,
+    in_promotion: r.promotion_eligible ?? false,
     meta_title: r.meta_title ?? "",
     meta_description: r.meta_description ?? "",
     images, variants,
@@ -65,7 +67,7 @@ function rowToProduct(r: DbProduct): Product {
 }
 
 const SELECT =
-  "id, slug, name, description, category_id, brand, sku, price, sale_price, stock, reserved_stock, minimum_stock, track_stock, weight, status, showcase, meta_title, meta_description, created_at, product_images(id,url,position,is_primary), product_variants(id,size,color,color_hex,stock)";
+  "id, slug, name, description, category_id, brand, sku, price, sale_price, stock, reserved_stock, minimum_stock, track_stock, weight, status, showcase, promotion_eligible, meta_title, meta_description, created_at, product_images(id,url,position,is_primary), product_variants(id,size,color,color_hex,stock)";
 
 // ----- Reads -------------------------------------------------------------
 export async function listAllProducts(): Promise<Product[]> {
@@ -98,7 +100,7 @@ export async function createProduct(p: ProductInput): Promise<Product> {
     price: p.price, sale_price: p.sale_price, stock: p.stock,
     reserved_stock: p.reserved_stock, minimum_stock: p.minimum_stock,
     track_stock: p.track_stock, weight: p.weight, status: p.status,
-    showcase: p.showcase,
+    showcase: p.showcase, promotion_eligible: p.in_promotion ?? false,
     meta_title: p.meta_title, meta_description: p.meta_description,
   }).select("id").single();
   if (error) throw error;
@@ -114,6 +116,7 @@ export async function updateProduct(id: string, patch: Partial<ProductInput>): P
   for (const k of PRODUCT_FIELDS) {
     if (patch[k] !== undefined) assign[k] = patch[k];
   }
+  if (patch.in_promotion !== undefined) assign.promotion_eligible = patch.in_promotion;
   if (Object.keys(fields).length) {
     const { error } = await supabase.from("products").update(fields).eq("id", id);
     if (error) throw error;
