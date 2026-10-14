@@ -438,7 +438,7 @@ export function ProductForm({ productId }: { productId?: string }) {
                     className="h-4 w-4 rounded border-gray-300"
                   />
                   <span className="text-sm font-medium text-gray-700">
-                    Participa da promoção (R$ 439,90 no checkout)
+                    Participa da promoção
                   </span>
                 </label>
               </div>
