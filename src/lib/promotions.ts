@@ -100,36 +100,18 @@ export async function setProductInActiveCampaign(
   const campaign = await getActiveCampaign();
   if (!campaign) return;
 
-  const currentIds = campaign.product_ids || [];
-  const alreadyIn = currentIds.includes(productId);
+  const { error } = await supabase.rpc("set_product_in_campaign", {
+    p_campaign: campaign.id,
+    p_product: productId,
+    p_participate: participate,
+  });
 
-  let newProductIds: string[];
-
-  if (participate) {
-    if (alreadyIn) return; // Já está na campanha, não precisa alterar
-    newProductIds = [...currentIds, productId];
-  } else {
-    if (!alreadyIn) return; // Já não estava, não precisa alterar
-    newProductIds = currentIds.filter((id) => id !== productId);
+  if (error) {
+    console.error("Erro ao atualizar campanha ativa:", error);
+    throw new Error(
+      error.message.includes("forbidden")
+        ? "Entre como administrador para alterar a promoção."
+        : "Falha ao atualizar participantes da promoção.",
+    );
   }
-
-  // 1. Atualiza a lista de produtos na tabela de promoções
-  const { error: promoError } = await supabase
-    .from("promotions")
-    .update({ 
-      product_ids: newProductIds,
-      updated_at: new Date().toISOString() 
-    })
-    .eq("id", campaign.id);
-
-  if (promoError) {
-    console.error("Erro ao atualizar campanha ativa:", promoError);
-    throw new Error("Falha ao atualizar participantes da promoção.");
-  }
-
-  // 2. Mantém a coluna promotion_eligible da tabela products sincronizada
-  await supabase
-    .from("products")
-    .update({ promotion_eligible: participate })
-    .eq("id", productId);
 }
