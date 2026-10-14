@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Pencil, Copy, Archive, Plus, Search, ImageOff, Sparkles, Trash2, Star, ArchiveRestore } from "lucide-react";
 import { useProductsStore, CATEGORIES, effectiveStock, type ProductStatus } from "@/stores/productsStore";
+import { getActiveCampaign } from "@/lib/promotions";
+
 
 export const Route = createFileRoute("/produtos/")({
   head: () => ({ meta: [{ title: "Produtos — Soraia Fernandes" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -30,6 +32,16 @@ function ProductsListPage() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string>("");
   const [status, setStatus] = useState<string>("");
+
+    const [promoProductIds, setPromoProductIds] = useState<string[]>([]);
+
+      useEffect(() => {
+        getActiveCampaign().then((campaign) => {
+          if (campaign?.product_ids) {
+            setPromoProductIds(campaign.product_ids);
+          }
+        });
+      }, []);
 
   const rows = useMemo(() => {
     return products.filter((p) => {
@@ -134,8 +146,22 @@ function ProductsListPage() {
                     </td>
                     <td className="px-4 py-3">{effectiveStock(p)}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 capitalize ${statusBadge[p.status]}`}>{p.status}</span>
-                    </td>
+                        <div className="flex flex-col gap-1 items-start">
+                          <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 capitalize ${statusBadge[p.status]}`}>
+                            {p.status}
+                          </span>
+                          {promoProductIds.includes(p.id) ? (
+                            <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">
+                              Promoção R$ 439,90
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] text-muted-foreground ring-1 ring-border">
+                              Sem promoção
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
                     <td className="px-4 py-3 text-center">
                       <button 
                         onClick={() => { toggleShowcase(p.id); toast.success(p.showcase ? "Removido da vitrine" : "Adicionado à vitrine"); }}
@@ -205,6 +231,12 @@ function ProductsListPage() {
                     <span className={`shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 capitalize ${statusBadge[p.status]}`}>{p.status}</span>
                   </div>
                   <p className="text-xs text-muted-foreground">{cat} · SKU {p.sku || "—"}</p>
+                  {promoProductIds.includes(p.id) && (
+                      <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 mt-1">
+                        Promoção R$ 439,90
+                      </span>
+                    )}
+
                   <p className="text-sm font-medium mt-1">{BRL(p.sale_price ?? p.price)} · estoque {effectiveStock(p)}</p>
                   <div className="flex flex-wrap gap-2 mt-2">
                     <button 
