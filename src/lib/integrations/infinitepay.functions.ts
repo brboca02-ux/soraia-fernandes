@@ -92,35 +92,9 @@ export const createInfinitePayCheckout = createServerFn({ method: "POST" })
 
     const totalCents = Math.round(total * 100);
 
-    // Monta os produtos exatamente como estão registrados no banco.
-    const items = rows.map((r) => ({
-      name: String(r.product_name).slice(0, 60),
-      price: Math.round(Number(r.unit_price) * 100),
-      quantity: Number(r.quantity),
-    }));
-
-    // Soma exclusivamente os produtos.
-    // Não existe frete nem desconto.
-    const itemsCents = items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0,
-    );
-
-    // O total do pedido precisa ser exatamente igual à soma dos produtos.
-    // Se houver qualquer diferença, não criamos uma linha artificial
-    // de frete ou desconto.
-    if (itemsCents !== totalCents) {
-      console.error("Total do pedido não corresponde aos produtos", {
-        orderNumber: data.orderNumber,
-        totalCents,
-        itemsCents,
-        difference: totalCents - itemsCents,
-      });
-
-      throw new Error(
-        "O total do pedido não corresponde à soma dos produtos",
-      );
-    }
+    // O total já foi recalculado no banco, incluindo desconto e frete.
+    // Uma linha consolidada impede diferenças entre a soma dos itens e o valor cobrado.
+    const items = [{ name: `Pedido ${data.orderNumber}`.slice(0, 60), price: totalCents, quantity: 1 }];
 
     const redirectUrl = new URL(
       `/pedido/sucesso/${encodeURIComponent(data.orderNumber)}`,

@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Package, ShoppingBag, Megaphone, Settings, LogOut, ShieldCheck, ExternalLink, X } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingBag, Megaphone, Tags, Settings, LogOut, ShieldCheck, ExternalLink, X } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { AdminNotificationsBell } from "@/components/admin/AdminNotificationsBell";
 import { BrandLogo } from "@/components/BrandLogo";
 
-type MenuKey = "dashboard" | "produtos" | "pedidos" | "marketing" | "configuracoes";
+type MenuKey = "dashboard" | "produtos" | "pedidos" | "marketing" | "promocoes" | "configuracoes";
 
 const MENU: { key: MenuKey; label: string; to: string; icon: typeof LayoutDashboard; match: string[] }[] = [
   { key: "dashboard", label: "Dashboard", to: "/dashboard", icon: LayoutDashboard, match: ["/dashboard"] },
@@ -16,6 +16,7 @@ const MENU: { key: MenuKey; label: string; to: string; icon: typeof LayoutDashbo
   { key: "pedidos", label: "Pedidos", to: "/pedidos", icon: ShoppingBag, match: ["/pedidos"] },
   
   { key: "marketing", label: "Marketing", to: "/marketing", icon: Megaphone, match: ["/marketing"] },
+  { key: "promocoes", label: "Promoções", to: "/promocoes", icon: Tags, match: ["/promocoes"] },
   { key: "configuracoes", label: "Configurações", to: "/admin", icon: Settings, match: ["/admin"] },
 ];
 

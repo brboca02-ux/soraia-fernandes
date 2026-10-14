@@ -86,7 +86,7 @@ export async function createOrder(input: NewOrderInput): Promise<CreatedOrder> {
     throw new Error("Nenhum item do carrinho tem product_id válido. Reabra a loja e adicione os produtos novamente.");
   }
 
-  const { data, error } = await supabase.rpc("place_order", { payload });
+  const { data, error } = await supabase.rpc("place_order_promoted", { payload });
   if (error) {
     // Traduz erros conhecidos
     const msg = error.message ?? "";

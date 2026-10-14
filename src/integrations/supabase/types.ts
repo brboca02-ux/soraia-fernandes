@@ -328,6 +328,9 @@ export type Database = {
           payment_method: string | null
           payment_provider: string | null
           payment_url: string | null
+          promotion_counted: boolean
+          promotion_id: string | null
+          promotion_snapshot: Json | null
           shipping_cost: number
           shipping_method: string | null
           status: string
@@ -351,6 +354,9 @@ export type Database = {
           payment_method?: string | null
           payment_provider?: string | null
           payment_url?: string | null
+          promotion_counted?: boolean
+          promotion_id?: string | null
+          promotion_snapshot?: Json | null
           shipping_cost?: number
           shipping_method?: string | null
           status?: string
@@ -374,6 +380,9 @@ export type Database = {
           payment_method?: string | null
           payment_provider?: string | null
           payment_url?: string | null
+          promotion_counted?: boolean
+          promotion_id?: string | null
+          promotion_snapshot?: Json | null
           shipping_cost?: number
           shipping_method?: string | null
           status?: string
@@ -395,6 +404,13 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_promotion_id_fkey"
+            columns: ["promotion_id"]
+            isOneToOne: false
+            referencedRelation: "promotions"
             referencedColumns: ["id"]
           },
         ]
@@ -484,6 +500,7 @@ export type Database = {
           minimum_stock: number
           name: string
           price: number
+          promotion_eligible: boolean
           reserved_stock: number
           sale_price: number | null
           showcase: boolean
@@ -506,6 +523,7 @@ export type Database = {
           minimum_stock?: number
           name: string
           price?: number
+          promotion_eligible?: boolean
           reserved_stock?: number
           sale_price?: number | null
           showcase?: boolean
@@ -528,6 +546,7 @@ export type Database = {
           minimum_stock?: number
           name?: string
           price?: number
+          promotion_eligible?: boolean
           reserved_stock?: number
           sale_price?: number | null
           showcase?: boolean
@@ -538,6 +557,54 @@ export type Database = {
           track_stock?: boolean
           updated_at?: string
           weight?: number
+        }
+        Relationships: []
+      }
+      promotions: {
+        Row: {
+          active: boolean
+          created_at: string
+          ends_at: string | null
+          id: string
+          minimum_subtotal: number
+          mode: string
+          name: string
+          product_ids: string[]
+          starts_at: string | null
+          updated_at: string
+          usage_count: number
+          usage_limit: number | null
+          value: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          minimum_subtotal?: number
+          mode: string
+          name: string
+          product_ids?: string[]
+          starts_at?: string | null
+          updated_at?: string
+          usage_count?: number
+          usage_limit?: number | null
+          value: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          minimum_subtotal?: number
+          mode?: string
+          name?: string
+          product_ids?: string[]
+          starts_at?: string | null
+          updated_at?: string
+          usage_count?: number
+          usage_limit?: number | null
+          value?: number
         }
         Relationships: []
       }
@@ -662,6 +729,8 @@ export type Database = {
         }
         Returns: undefined
       }
+      campaign_admin_stats: { Args: never; Returns: Json }
+      campaign_available: { Args: { p_id: string }; Returns: boolean }
       get_order_public: {
         Args: { p_email: string; p_order_number: string }
         Returns: Json
@@ -674,8 +743,17 @@ export type Database = {
         Returns: boolean
       }
       place_order: { Args: { payload: Json }; Returns: Json }
+      place_order_promoted: { Args: { payload: Json }; Returns: Json }
+      quote_promotions: {
+        Args: { p_coupon_code?: string; p_items: Json }
+        Returns: Json
+      }
       set_order_fulfillment: {
         Args: { p_order_id: string; p_stage: string }
+        Returns: undefined
+      }
+      set_product_campaigns: {
+        Args: { p_campaigns: string[]; p_product: string }
         Returns: undefined
       }
       upsert_abandoned_cart: { Args: { payload: Json }; Returns: string }
