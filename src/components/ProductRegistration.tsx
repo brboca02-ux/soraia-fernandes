@@ -7,6 +7,8 @@ import { AdminShell, PRODUCTS_TABS } from "@/components/AdminShell";
 import { Button } from "@/components/ui/button";
 import { uploadProductImage } from "@/lib/api/supaProducts";
 import { CATEGORIES, emptyProduct, slugify, useProductsStore } from "@/stores/productsStore";
+import { setProductInActiveCampaign } from "@/lib/promotions";
+
 
 const productSchema = z.object({
   name: z.string().trim().min(2, "Informe o nome da roupa.").max(120),
@@ -27,6 +29,7 @@ export function ProductRegistration() {
   const [stock, setStock] = useState("");
   const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
+  const [inPromotion, setInPromotion] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -67,14 +70,20 @@ export function ProductRegistration() {
     try {
       const url = await uploadProductImage(photo);
       const product = parsed.data;
-      await create({
+      const created = await create({
         ...emptyProduct(),
         ...product,
         slug: `${slugify(product.name)}-${Date.now().toString(36)}`,
         images: [{ id: crypto.randomUUID(), product_id: "new", url, position: 0, is_primary: true }],
       });
+
+      if (created?.id) {
+        await setProductInActiveCampaign(created.id, inPromotion);
+      }
+
       toast.success("Roupa cadastrada com sucesso.");
       await navigate({ to: "/produtos" });
+
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Não foi possível cadastrar a roupa.");
     } finally {
@@ -115,6 +124,19 @@ export function ProductRegistration() {
               <label htmlFor="product-stock" className="text-sm font-medium">Quantidade em estoque *</label>
               <input id="product-stock" type="number" inputMode="numeric" min="0" max="1000000" step="1" value={stock} onChange={(event) => setStock(event.target.value)} required placeholder="0" className={inputClass} />
             </div>
+            <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/20 p-3.5">
+                <input
+                  id="product-in-promo"
+                  type="checkbox"
+                  checked={inPromotion}
+                  onChange={(e) => setInPromotion(e.target.checked)}
+                  className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
+                />
+                <label htmlFor="product-in-promo" className="text-sm font-medium cursor-pointer">
+                  Participa da promoção ativa? (desconto de R$ 439,90)
+                </label>
+              </div>
+
             <div className="space-y-2">
               <label htmlFor="product-description" className="text-sm font-medium">Descrição</label>
               <textarea id="product-description" value={description} onChange={(event) => setDescription(event.target.value)} maxLength={2000} rows={5} placeholder="Tecido, caimento e detalhes da peça" className={inputClass} />

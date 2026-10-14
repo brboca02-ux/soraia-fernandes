@@ -10,6 +10,7 @@ import { uploadProductImage } from "@/lib/api/supaProducts";
 import { analyzeProductImage, type DetectedColor } from "@/lib/api/analyzeProduct.functions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { computeFallbackSizes } from "@/lib/products/variantSizes";
+import { setProductInActiveCampaign, getActiveCampaign } from "@/lib/promotions";
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 
@@ -39,10 +40,17 @@ export function ProductForm({ productId }: { productId?: string }) {
 
   const set = <K extends keyof typeof data>(k: K, v: (typeof data)[K]) => setData((d) => ({ ...d, [k]: v }));
 
-  // Auto-slug while creating new
-  useEffect(() => {
-    if (!existing && data.name && !data.slug) set("slug", slugify(data.name));
-  }, [data.name]); // eslint-disable-line
+          // Carrega se a peça já está participando da campanha ativa
+          useEffect(() => {
+            if (!productId) return;
+            getActiveCampaign().then((campaign) => {
+              if (campaign) {
+                const isParticipant = campaign.product_ids.includes(productId);
+                setData((prev) => ({ ...prev, in_promotion: isParticipant }));
+              }
+            });
+          }, [productId]);
+
 
   // ---------- Images ----------
   const dragIdx = useRef<number | null>(null);
@@ -355,12 +363,18 @@ export function ProductForm({ productId }: { productId?: string }) {
     const payload = { ...data, slug: data.slug || slugify(data.name) };
     setSaving(true);
     try {
+      let targetId = existing?.id;
+    
       if (existing) {
         await update(existing.id, payload);
         toast.success("Produto atualizado");
       } else {
-        await create(payload);
+        const created = await create (payload);
+        targetId = created?.id;
         toast.success("Produto criado");
+      }
+      if (targetId) {
+        await setProductInActiveCampaign(targetId, Boolean(data.in_promotion));
       }
       navigate({ to: "/produtos" });
     } catch (e) {

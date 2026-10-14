@@ -57,6 +57,7 @@ function rowToProduct(r: DbProduct): Product {
     weight: num(r.weight),
     status: r.status,
     showcase: r.showcase,
+     in_promotion: false,
     meta_title: r.meta_title ?? "",
     meta_description: r.meta_description ?? "",
     images, variants,
@@ -278,4 +279,43 @@ export async function isCurrentUserAdmin(): Promise<boolean> {
   });
   if (error) return false;
   return !!data;
+}
+// ----- Promoções / Campanhas --------------------------------------------
+
+// 1. Busca a campanha ativa e a lista de peças participantes
+export async function getActiveCampaign(): Promise<{ id: string; product_ids: string[] } | null> {
+  const { data, error } = await supabase
+    .from("promotions")
+    .select("id, product_ids")
+    .eq("active", true)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return {
+    id: data.id,
+    product_ids: Array.isArray(data.product_ids) ? data.product_ids : [],
+  };
+}
+
+// 2. Adiciona ou remove a peça da campanha ao salvar no Admin
+export async function setProductCampaign(productId: string, inCampaign: boolean): Promise<void> {
+  const campaign = await getActiveCampaign();
+  if (!campaign) return;
+
+  let updatedIds = new Set(campaign.product_ids);
+
+  if (inCampaign) {
+    updatedIds.add(productId); // Inclui a peça na promoção
+  } else {
+    updatedIds.delete(productId); // Remove a peça da promoção
+  }
+
+  const { error } = await supabase
+    .from("promotions")
+    .update({ product_ids: Array.from(updatedIds) })
+    .eq("id", campaign.id);
+
+  if (error) {
+    console.error("Erro ao atualizar campanha de promoção:", error);
+  }
 }

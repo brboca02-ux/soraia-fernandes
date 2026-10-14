@@ -56,3 +56,80 @@ export async function deletePromotion(id: string) {
   const { error } = await supabase.from("promotions").delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
+
+export interface Campaign {
+  id: string;
+  name?: string;
+  product_ids: string[];
+  is_active: boolean;
+}
+
+// src/lib/promotions.ts
+
+/**
+ * 1. Busca a campanha ativa atual (ex: "Vestidos selecionados").
+ */
+export async function getActiveCampaign(): Promise<Promotion | null> {
+  const { data, error } = await supabase
+    .from("promotions")
+    .select("*")
+    .eq("active", true)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Erro ao buscar campanha ativa:", error);
+    return null;
+  }
+  return data as Promotion | null;
+}
+
+/**
+ * 2. Atualiza a participação do produto na campanha ativa.
+ * - Se participate === true: adiciona o productId em product_ids da campanha.
+ * - Se participate === false: remove o productId do array.
+ */
+export async function setProductInActiveCampaign(
+  productId: string,
+  participate: boolean
+): Promise<void> {
+  if (!productId) return;
+
+  // Busca a campanha ativa atual
+  const campaign = await getActiveCampaign();
+  if (!campaign) return;
+
+  const currentIds = campaign.product_ids || [];
+  const alreadyIn = currentIds.includes(productId);
+
+  let newProductIds: string[];
+
+  if (participate) {
+    if (alreadyIn) return; // Já está na campanha, não precisa alterar
+    newProductIds = [...currentIds, productId];
+  } else {
+    if (!alreadyIn) return; // Já não estava, não precisa alterar
+    newProductIds = currentIds.filter((id) => id !== productId);
+  }
+
+  // 1. Atualiza a lista de produtos na tabela de promoções
+  const { error: promoError } = await supabase
+    .from("promotions")
+    .update({ 
+      product_ids: newProductIds,
+      updated_at: new Date().toISOString() 
+    })
+    .eq("id", campaign.id);
+
+  if (promoError) {
+    console.error("Erro ao atualizar campanha ativa:", promoError);
+    throw new Error("Falha ao atualizar participantes da promoção.");
+  }
+
+  // 2. Mantém a coluna promotion_eligible da tabela products sincronizada
+  await supabase
+    .from("products")
+    .update({ promotion_eligible: participate })
+    .eq("id", productId);
+}

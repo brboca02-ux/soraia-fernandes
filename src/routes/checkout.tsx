@@ -139,24 +139,11 @@ function CheckoutPage() {
   const itemsCount = items.reduce((s, i) => s + i.quantity, 0);
   const selectedQuote = quotes.find((q) => q.code === shippingCode);
   const shippingCost = selectedQuote?.price ?? 0;
+    // ✅ USAR APENAS:
+  const displaySubtotal = promotionQuote?.subtotal ?? subtotal;
+  const discount = promotionQuote?.discount ?? 0;
+  const total = Math.max(0, displaySubtotal + shippingCost - discount);
 
-    const PROMO_PRICE_PER_ITEM = 439.90;
-      const promoDiscount = useMemo(() => {
-        return items.reduce((acc, item) => {
-          // 🛑 Se o item NÃO estiver marcado na promoção, ignora:
-          const isPromo = (item as any).in_promotion ?? (item as any).product?.in_promotion;
-          if (!isPromo) return acc;
-
-          // ✅ Se estiver na promoção, calcula o desconto para chegar em 439,90:
-          const unitPrice = parseFloat(item.price.amount);
-          const itemDiscount = Math.max(0, unitPrice - PROMO_PRICE_PER_ITEM);
-          return acc + itemDiscount * item.quantity;
-        }, 0);
-      }, [items]);
-
-      const displaySubtotal = promotionQuote?.subtotal ?? subtotal;
-      const discount = (promotionQuote?.discount ?? 0) + promoDiscount;
-      const total = Math.max(0, displaySubtotal + shippingCost - discount);
 
   useEffect(() => {
     if (user?.email && !email) setEmail(user.email);
