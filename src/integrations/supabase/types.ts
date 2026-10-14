@@ -756,6 +756,10 @@ export type Database = {
         Args: { p_campaigns: string[]; p_product: string }
         Returns: undefined
       }
+      set_product_in_campaign: {
+        Args: { p_campaign: string; p_participate: boolean; p_product: string }
+        Returns: undefined
+      }
       upsert_abandoned_cart: { Args: { payload: Json }; Returns: string }
     }
     Enums: {
